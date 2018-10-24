@@ -19,6 +19,10 @@ public class BankSystem {
 		}
 
 		// 회원가입
+		/**
+		 * 회원가입 현재 배열로 만든 상태이며 최대 수용인원은 10명이다.
+		 * 
+		 * */
 		public void signUp() {
 			System.out.println("회원가입 화면입니다.");
 			if (count < 10) {
@@ -29,6 +33,10 @@ public class BankSystem {
 			}
 		}
 
+		
+		/**
+		 * 사용자의 정보를 입력하는 구간이다 (추후 UI에서 받아온 데이터를 통해 사용자 Customer의 정보 저장예정)
+		 * */
 		private void inputInfo(Customer customer) {
 			System.out.print("ID > ");
 			customer.setId(scan.next());
@@ -38,12 +46,21 @@ public class BankSystem {
 			customer.setName(scan.next());
 		}
 
+		/**
+		 * 현재 : console에서 출력
+		 * 완성예정 : UI에서 출력
+		 * 사용자의 정보 출력 
+		 * */
 		public void viewInfo(Customer customer) {
 			System.out.println(customer.getName() + "\t" + customer.getId() + "\t" + customer.getBalance());
 
 		}
 
 		// 고객정보 출력
+		/**
+		 * 현재 : console 출력
+		 * 완성예정 : UI에 정보 입력 및 검사 예정
+		 * */
 		public void printCustomer() {
 			System.out.print("어떤 고객을 찾으시나요(이름을 입력하세요) > ");
 			String findCustomer = scan.next();
