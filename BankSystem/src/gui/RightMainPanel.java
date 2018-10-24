@@ -28,6 +28,8 @@ public class RightMainPanel extends Panel {
 		wp = new WithdrawPanel();
 		pcip = new PrintCustomerInfoPanel();
 		
+		this.add(sp, "sing");
+		
 		
 		
 		
