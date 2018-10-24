@@ -37,7 +37,7 @@ public class LeftMainPanel extends Panel implements ActionListener{
 		// TODO Auto-generated method stub
 		Object obj = e.getSource();
 		Button button = (Button) obj;
-		
+	
 		
 		
 	}

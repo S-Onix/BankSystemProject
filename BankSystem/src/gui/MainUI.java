@@ -1,7 +1,7 @@
 package gui;
 
+import java.awt.BorderLayout;
 import java.awt.Frame;
-import java.awt.GridLayout;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
@@ -10,14 +10,15 @@ public class MainUI extends Frame{
 	RightMainPanel rm;
 	
 	public MainUI() {
+		this.setTitle("은행 업무 시스템");
 		
 		lm = new LeftMainPanel();
 		rm = new RightMainPanel();
 		
-		this.setLayout(new GridLayout(1,2));
+		this.setLayout(new BorderLayout());
 		
-		this.add(lm);
-		this.add(rm);
+		this.add(lm, BorderLayout.WEST);
+		this.add(rm, BorderLayout.CENTER);
 		this.setVisible(true);
 		this.setSize(500,500);
 		

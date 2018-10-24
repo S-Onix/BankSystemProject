@@ -1,33 +1,40 @@
 package gui;
 
 import java.awt.BorderLayout;
+import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Label;
 import java.awt.Panel;
 
-public class RightMainPanel extends Panel{
-	private String[] direction = { "West", "East", "North", "South" };
-	private Label[] lbs;
-	private Label centerLabel;
+import rightpanel.DepositPanel;
+import rightpanel.PrintCustomerInfoPanel;
+import rightpanel.PrintCustomerPanel;
+import rightpanel.SignInPanel;
+import rightpanel.WithdrawPanel;
 
+public class RightMainPanel extends Panel {
+	private CardLayout card;
+	SignInPanel sp;
+	PrintCustomerPanel pcp;
+	DepositPanel dp;
+	WithdrawPanel wp;
+	PrintCustomerInfoPanel pcip;
+	
 	public RightMainPanel() {
-
-		lbs = new Label[4];
-		centerLabel = new Label("Áß¾Ó");
-		for (int i = 0; i < lbs.length; i++) {
-			lbs[i] = new Label("");
-		}
-
-		centerLabel.setBackground(Color.blue);
-		
-		this.setLayout(new BorderLayout());
+		card = new CardLayout();
+		sp = new SignInPanel();
+		pcp = new PrintCustomerPanel();
+		dp = new DepositPanel();
+		wp = new WithdrawPanel();
+		pcip = new PrintCustomerInfoPanel();
 		
 		
 		
-		for (int i = 0; i < direction.length; i++) {
-			this.add(lbs[i], direction[i]);
-		}
-		this.add(centerLabel, "Center");
-
+		
+		
+		
+		card.show(this, "right panel");
+		
+		
 	}
 }
