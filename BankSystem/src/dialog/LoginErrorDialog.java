@@ -48,6 +48,7 @@ public class LoginErrorDialog extends Dialog{
 		this.add(p1);
 		this.add(p2);
 		this.setSize(300, 100);
+		this.setResizable(false);
 		
 		this.addWindowListener(new WindowAdapter() {
 			@Override

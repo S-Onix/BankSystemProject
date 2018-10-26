@@ -18,6 +18,7 @@ import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import dialog.ExitDialog;
 import dialog.LoginErrorDialog;
 import dialog.SignInDialog;
 
@@ -25,37 +26,61 @@ public class InitPanel extends Panel {
 	TopPanel tp;
 	BottomPanel bp;
 
-
 	public InitPanel(Frame parent) {
 		tp = new TopPanel();
 		bp = new BottomPanel(parent);
 
 		this.setLayout(new GridLayout(2, 1));
 
-		this.add(tp);
+		this.add(tp.getPanel());
 		this.add(bp);
 	}
 
 }
 
-class TopPanel extends Panel {
-	Canvas c;
+//class TopPanel extends Panel {
+//	Canvas c;
+//	Image img;
+//
+//	public TopPanel() {
+//		c = new Canvas();
+//		Toolkit tool = Toolkit.getDefaultToolkit();
+//		img = tool.getImage("D:/work_yms/img/duke.jpg");
+//		this.setLayout(new BorderLayout());
+//		this.add(c, "Center");
+//	}
+//
+//	@Override
+//	public void paint(Graphics g) {
+//
+//		g.drawImage(img, 0, 0, this);
+//	}
+//}
+
+class TopPanel extends Canvas {
+	Panel p;
 	Image img;
 
 	public TopPanel() {
-		c = new Canvas();
+		p = new Panel();
+
 		Toolkit tool = Toolkit.getDefaultToolkit();
 		img = tool.getImage("D:/work_yms/img/duke.jpg");
-		this.setLayout(new BorderLayout());
-		this.add(c, "Center");
+
+		p.setLayout(new BorderLayout());
+		p.add(this, "Center");
 	}
 
 	@Override
 	public void paint(Graphics g) {
+		g.drawImage(img, 0, 0, this);
+	}
 
-		g.drawImage(img,0,0,this);
+	public Panel getPanel() {
+		return this.p;
 	}
 }
+
 
 class BottomPanel extends Panel implements ActionListener{
 	GridBagLayout gBag;
@@ -65,17 +90,19 @@ class BottomPanel extends Panel implements ActionListener{
 	Label[] emptyLb;
 	SignInDialog sd;
 	LoginErrorDialog led;
+	ExitDialog ed;
 
 	public BottomPanel(Frame parent) {
 		this.setBackground(Color.gray);
 		
 		sd = new SignInDialog(parent);
 		led = new LoginErrorDialog(parent);
+		ed = new ExitDialog(parent);
 		
 		gBag = new GridBagLayout();
-		emptyLb = new Label[10];
+		emptyLb = new Label[11];
 		for (int i = 0; i < emptyLb.length; i++) {
-			emptyLb[i] = new Label("");
+			emptyLb[i] = new Label();
 		}
 
 		idLb = new Label("ID : ", Label.CENTER);
@@ -91,25 +118,25 @@ class BottomPanel extends Panel implements ActionListener{
 		exitButton.addActionListener(this);
 
 		this.setLayout(gBag);
-		gbinsert(idLb, 1, 2, 3, 2);
-		gbinsert(idTf, 5, 2, 6, 2);
-		gbinsert(pwLb, 1, 5, 3, 2);
-		gbinsert(pwTf, 5, 5, 6, 2);
-		gbinsert(loginButton, 1, 9, 3, 2);
-		gbinsert(signinButton, 5, 9, 3, 2);
-		gbinsert(exitButton, 9, 9, 2, 2);
-		gbinsert(emptyLb[0], 0, 0, 12, 2);
-		gbinsert(emptyLb[1], 0, 2, 1, 10);
-		gbinsert(emptyLb[2], 4, 2, 1, 2);
-		gbinsert(emptyLb[3], 4, 5, 1, 2);
-		gbinsert(emptyLb[4], 4, 9, 1, 2);
-		gbinsert(emptyLb[5], 8, 9, 1, 2);
-		gbinsert(emptyLb[6], 11, 2, 1, 10);
-		gbinsert(emptyLb[7], 1, 4, 10, 1);
-		gbinsert(emptyLb[8], 1, 7, 10, 2);
-		gbinsert(emptyLb[9], 1, 11, 10, 1);
+		gbinsert(idLb, 1, 1, 2, 1);
+		gbinsert(idTf, 4, 1, 5, 1);
+		gbinsert(pwLb, 1, 3, 2, 1);
+		gbinsert(pwTf, 4, 3, 5, 1);
+		gbinsert(loginButton, 1, 5, 2, 1);
+		gbinsert(signinButton, 4, 5, 2, 1);
+		gbinsert(exitButton, 7, 5, 2, 1);
+		gbinsert(emptyLb[0], 0, 0, 10, 1);
+		gbinsert(emptyLb[1], 0, 1, 1, 6);
+		gbinsert(emptyLb[2], 3, 1, 1, 6);
+		gbinsert(emptyLb[3], 9, 1, 1, 8);
+		gbinsert(emptyLb[4], 1, 2, 2, 1);
+		gbinsert(emptyLb[5], 1, 4, 2, 1);
+		gbinsert(emptyLb[6], 1, 6, 2, 1);
+		gbinsert(emptyLb[7], 4, 2, 5, 1);
+		gbinsert(emptyLb[8], 4, 4, 5, 1);
+		gbinsert(emptyLb[9], 4, 6, 5, 1);
+		gbinsert(emptyLb[10], 6, 5, 1, 1);
 
-		this.setMaximumSize(getMaximumSize());
 	}
 
 	public void gbinsert(Component c, int x, int y, int w, int h) {
@@ -135,7 +162,7 @@ class BottomPanel extends Panel implements ActionListener{
 		}
 		
 		if(e.getSource().equals(exitButton)) {
-			//exit dialog È£Ãâ
+			ed.setVisible(true);
 		}
 		
 	}

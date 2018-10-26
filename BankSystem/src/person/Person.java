@@ -17,6 +17,4 @@ public class Person {
 	public void setIdentifyNumber(String identifyNumber) {
 		this.identifyNumber = identifyNumber;
 	}
-	
-	
 }

@@ -30,12 +30,9 @@ public class MainUI extends Frame{
 		this.add(ip, "Center");
 		
 		
-		
-		
-		
-		
 		this.setVisible(true);
-		this.setSize(500,500);
+		this.setSize(350,500);
+		this.setResizable(false);
 		
 		this.addWindowListener(new WindowAdapter() {
 			@Override

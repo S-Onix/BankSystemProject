@@ -16,7 +16,4 @@ public class BankRelative extends Person{
 	public void setPw(String pw) {
 		this.pw = pw;
 	}
-	
-	
-
 }
