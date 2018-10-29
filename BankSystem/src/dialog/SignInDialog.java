@@ -42,26 +42,18 @@ public class SignInDialog extends Dialog {
 
 	String emailStr[] = { "gmail.com", "naver.com", "daum.net", "yahoo.com", "기타입력" };
 
-	String monthStr[] = { "", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12" };
-
-	String dayStr[] = { "", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17",
-			"18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31" };
-
 	String phoneFirst[] = { "02", "031", "032", "010" };
 
-	public String[] makeYear() {
-		String[] yearStr = new String[50];
-		for (int i = 2018; i > 2018 - yearStr.length; i--) {
+	// 확인, 취소, 중복 다이얼로그
+	Dialog confirmD, cancelD, distinctD;
 
-		}
-		return yearStr;
-	}
+	boolean isClose = false;
 
 //	public SignInDialog(Frame parent, ArrayList<Customer> customers) {
 	public SignInDialog(Frame parent) {
 		super(parent, "Sign in Dialog");
 
-		this.setBounds(200, 200, 400, 600);
+		this.setBounds(200, 200, 380, 400);
 		this.setLayout(null);
 
 		// 회원가입 Label
@@ -134,7 +126,6 @@ public class SignInDialog extends Dialog {
 		pwReLb.setBounds(255, 160, 70, 25);
 		this.add(pwReLb);
 
-//		47 190 50 25
 		nameLb = new Label("이름");
 		nameLb.setBounds(45, 210, 50, 25);
 		this.add(nameLb);
@@ -207,13 +198,44 @@ public class SignInDialog extends Dialog {
 		this.add(hyponLb3);
 		this.add(phoneTf1);
 		this.add(phoneTf2);
-		
-		
-		//버튼
+
+		// 버튼
 		confirmButton = new Button("확인");
 		confirmButton.setBounds(80, 350, 65, 30);
 		this.add(confirmButton);
 
+		confirmButton.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				confirmD.setVisible(true);
+				// 추가해야함
+			}
+		});
+
+		cancelButton = new Button("취소");
+		cancelButton.setBounds(160, 350, 65, 30);
+		this.add(cancelButton);
+
+		cancelButton.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				cancelD.setVisible(true);
+				if (!getClose()) {
+					dispose();
+				}
+
+			}
+		});
+		
+		initCancelDialog();
+		initSaveDialog();
+
+		this.setModal(true);
+		this.setResizable(false);
 		this.addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent e) {
@@ -222,9 +244,73 @@ public class SignInDialog extends Dialog {
 		});
 
 	}
-	
-	public void saveCustomer(Customer customer) {
+
+	public void initCancelDialog() {
+		cancelD = new Dialog(this);
+		Label msg = new Label("회원가입을 취소하겠습니까?");
+		Button yes = new Button("네");
+		Button no = new Button("아니요");
 		
+		yes.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				setClose(true);
+				dispose();
+			}
+		});
+		no.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				dispose();
+			}
+		});
+
+		cancelD.setBounds(100, 100, 300, 200);
+		cancelD.setModal(true);
+		cancelD.addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosing(WindowEvent e) {
+				cancelD.dispose();
+			}
+		});
+
+	}
+
+	public void initSaveDialog() {
+		confirmD = new Dialog(this);
+		Label msg = new Label("회원가입을 완료했습니다");
+		Button yes = new Button("확인");
+
+		
+		confirmD.setBounds(100,100,300,200);
+		confirmD.setModal(true);
+		confirmD.addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosing(WindowEvent e) {
+				//saveCustomer(customer 삽입);
+				confirmD.dispose();
+			}
+		});
+
+	}
+
+	public void setClose(boolean isClose) {
+		this.isClose = isClose;
+	}
+
+	public boolean getClose() {
+		return this.isClose;
+	}
+
+	public void initDistinctDialog() {
+		distinctD = new Dialog(this);
+	}
+
+	public void saveCustomer(Customer customer) {
+
 	}
 
 }
