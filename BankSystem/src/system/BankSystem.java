@@ -1,5 +1,7 @@
 package system;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Random;
 import java.util.Scanner;
 
@@ -10,7 +12,8 @@ public class BankSystem {
 
 	public Scanner scan;
 	public boolean run;
-	private Customer[] customers;
+//	private Customer[] customers;
+	private ArrayList<Customer> customers;
 	public int count = 0;
 	private Random random;
 	StringBuffer sb;
@@ -18,7 +21,7 @@ public class BankSystem {
 	public BankSystem() {
 		scan = new Scanner(System.in);
 		run = true;
-		customers = new Customer[10];
+		customers = new ArrayList<>();
 	}
 
 	// 회원가입
@@ -27,13 +30,17 @@ public class BankSystem {
 	 * 
 	 */
 	public void signUp() {
-		System.out.println("회원가입 화면입니다.");
-		if (count < 10) {
-			customers[count++] = new Customer();
-			inputInfo(customers[count - 1]);
-		} else {
-			System.out.println("더이상 회원가입 할 수 없습니다.");
-		}
+//		System.out.println("회원가입 화면입니다.");
+//		if (count < 10) {
+//			customers[count++] = new Customer();
+//			inputInfo(customers[count - 1]);
+//		} else {
+//			System.out.println("더이상 회원가입 할 수 없습니다.");
+//		}
+		Customer customer = new Customer();
+		inputInfo(customer);
+		customers.add(customer);
+
 	}
 
 	/**
@@ -47,17 +54,17 @@ public class BankSystem {
 		System.out.print("이름 > ");
 		customer.setName(scan.next());
 		customer.setAccount(createAccount());
+		System.out.println("사용자의 계좌번호는 " + customer.getAccount() + " 입니다.");
 
 	}
-	
-	
+
 	public String createAccount() {
 
 		int count = 0;
 		String result;
 		String first = "";
 		random = new Random();
-		
+
 		int firstInt = random.nextInt(999) + 1;
 		int temp = firstInt;
 
@@ -77,19 +84,19 @@ public class BankSystem {
 			first = "" + firstInt;
 			break;
 		}
-		
+
 		count = 0;
 
 		String second = "";
 		int secondInt = random.nextInt(99999) + 1;
 		temp = secondInt;
-		
-		while(temp >0 ) {
+
+		while (temp > 0) {
 			count++;
-			temp= temp/10;
+			temp = temp / 10;
 		}
-		
-		switch(count) {
+
+		switch (count) {
 		case 1:
 			second = "0000" + secondInt;
 			break;
@@ -105,26 +112,26 @@ public class BankSystem {
 		case 5:
 			second = "" + secondInt;
 			break;
-			
+
 		}
-		
+
 		count = 0;
-		
+
 		String third = "";
 		int thirdInt = random.nextInt(99999) + 1;
 		temp = thirdInt;
-		
-		while(temp >0 ) {
+
+		while (temp > 0) {
 			count++;
-			temp= temp/10;
+			temp = temp / 10;
 		}
-		
-		switch(count) {
+
+		switch (count) {
 		case 1:
 			third = "0000" + thirdInt;
 			break;
 		case 2:
-			third= "000" + thirdInt;
+			third = "000" + thirdInt;
 			break;
 		case 3:
 			third = "00" + thirdInt;
@@ -135,12 +142,11 @@ public class BankSystem {
 		case 5:
 			third = "" + thirdInt;
 			break;
-			
-		}
-		
-		result = first + "-" + second +"-" + third;
 
-		
+		}
+
+		result = first + "-" + second + "-" + third;
+
 		return result;
 	}
 
@@ -163,61 +169,84 @@ public class BankSystem {
 		System.out.println("이름\t아이디\t잔고");
 		System.out.println("-------------------------------------------");
 
-		for (int i = 0; i < customers.length; i++) {
-			if (customers[i] != null) {
-				if (customers[i].getName().equals(findCustomer))
-					viewInfo(customers[i]);
-			} else if (i == customers.length)
-				System.out.println("찾으시는 고객님이 없습니다.");
+		Iterator i = customers.iterator();
+		while (i.hasNext()) {
+			Customer customer = (Customer) i.next();
+			if (customer.getName().equals(findCustomer)) {
+				viewInfo(customer);
+			}
 		}
+
+//		for (int i = 0; i < customers.length; i++) {
+//			if (customers[i] != null) {
+//				if (customers[i].getName().equals(findCustomer))
+//					viewInfo(customers[i]);
+//			} else if (i == customers.length)
+//				System.out.println("찾으시는 고객님이 없습니다.");
+//		}
 	}
 
-	public Customer checkCustomer() {
+	public Customer checkCustomer(String name, String id, String password) {
 		System.out.print("어떤 고객님의 계좌를 찾으시나요? (이름을 입력해 주세요) > ");
-		String findCustomer = scan.next();
-		String findId;
-		String findPw;
+		// 추후 UI와 적용
+
 		int count = 0;
 
-		for (int i = 0; i < customers.length; i++) {
-			if (customers[i] != null) {
-				if (customers[i].getName().equals(findCustomer)) {
-					System.out.print("ID를 입력해 주세요 > ");
-					findId = scan.next();
-					if (customers[i].getId().equals(findId)) {
-						System.out.print("Password를 입력해 주세요 > ");
-						findPw = scan.next();
-						if (customers[i].getPw().equals(findPw))
-							return customers[i];
-						else {
-							System.out.println("Password를 잘못 입력 하셨습니다.");
-							if (count != 3) {
-								i -= 1;
-								count++;
-							} else if (count == 3) {
-								break;
-							}
-						}
-					} else {
-						System.out.println("ID를 잘못 입력 하셨습니다.");
-						if (count != 3) {
-							i -= 1;
-							count++;
-						} else if (count == 3) {
-							break;
-						}
-					}
+		Iterator i = customers.iterator();
+		while (i.hasNext()) {
+			Customer customer = (Customer) i.next();
+			while (count != 3) {
+				if (customer.getName().equals(name) && customer.getId().equals(id)
+						&& customer.getPw().equals(password)) {
+					// 올바르게 출력
+
+					break;
+				} else {
+					// 잘못 입력했습니다 다시 입력해주세요
+					count++;
 				}
 			}
 		}
+
+//		for (int i = 0; i < customers.length; i++) {
+//			if (customers[i] != null) {
+//				if (customers[i].getName().equals(findCustomer)) {
+//					System.out.print("ID를 입력해 주세요 > ");
+//					findId = scan.next();
+//					if (customers[i].getId().equals(findId)) {
+//						System.out.print("Password를 입력해 주세요 > ");
+//						findPw = scan.next();
+//						if (customers[i].getPw().equals(findPw))
+//							return customers[i];
+//						else {
+//							System.out.println("Password를 잘못 입력 하셨습니다.");
+//							if (count != 3) {
+//								i -= 1;
+//								count++;
+//							} else if (count == 3) {
+//								break;
+//							}
+//						}
+//					} else {
+//						System.out.println("ID를 잘못 입력 하셨습니다.");
+//						if (count != 3) {
+//							i -= 1;
+//							count++;
+//						} else if (count == 3) {
+//							break;
+//						}
+//					}
+//				}
+//			}
+//		}
 		System.out.println("찾으시는 회원이 없습니다.");
 		return null;
 	}
 
 	// 예금
-	public void deposit() {
+	public void deposit(String name, String id, String pw) {
 		int money;
-		Customer customer = checkCustomer();
+		Customer customer = checkCustomer(name, id, pw);
 		if (customer != null) {
 			System.out.print("입금액 > ");
 			money = scan.nextInt();
@@ -226,9 +255,9 @@ public class BankSystem {
 	}
 
 	// 출금
-	public void withdraw() {
+	public void withdraw(String name, String id, String pw) {
 		int money;
-		Customer customer = checkCustomer();
+		Customer customer = checkCustomer(name, id, pw);
 		if (customer != null) {
 			System.out.print("출금액 > ");
 			money = scan.nextInt();
@@ -237,8 +266,8 @@ public class BankSystem {
 	}
 
 	// 잔고
-	public void printBalance() {
-		Customer customer = checkCustomer();
+	public void printBalance(String name, String id, String pw) {
+		Customer customer = checkCustomer(name, id, pw);
 		System.out.println(customer.getName() + "님의 잔고는 " + customer.getBalance() + "원 입니다.");
 	}
 
@@ -259,13 +288,13 @@ public class BankSystem {
 				printCustomer();
 				break;
 			case 3:
-				deposit();
+//				deposit();
 				break;
 			case 4:
-				withdraw();
+//				withdraw();
 				break;
 			case 5:
-				printBalance();
+//				printBalance();
 				break;
 			case 6:
 				setRun(false);
