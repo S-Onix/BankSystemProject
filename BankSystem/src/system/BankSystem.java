@@ -9,39 +9,40 @@ import person.Customer;
 
 public class BankSystem {
 	// has a 관계 : BankSystem 클래스는 Customer 객체를 가질 수 있다.
+	// scanner 부분은 전부 UI에서 데이터를 받아와야 함.
 
 	public Scanner scan;
 	public boolean run;
-//	private Customer[] customers;
-	private ArrayList<Customer> customers;
+	public ArrayList<Customer> customers;
 	public int count = 0;
 	private Random random;
 	StringBuffer sb;
+
+	private Customer loginCustomer;
 
 	public BankSystem() {
 		scan = new Scanner(System.in);
 		run = true;
 		customers = new ArrayList<>();
 	}
+	
+	
+	public ArrayList<Customer> getCustomers() {
+		return customers;
+	}
+	
+	public Customer getLoginCustomer() {
+		return loginCustomer;
+	}
 
 	// 회원가입
-	/**
-	 * 회원가입 현재 배열로 만든 상태이며 최대 수용인원은 10명이다.
-	 * 
-	 */
-	public void signUp() {
-//		System.out.println("회원가입 화면입니다.");
-//		if (count < 10) {
-//			customers[count++] = new Customer();
-//			inputInfo(customers[count - 1]);
-//		} else {
-//			System.out.println("더이상 회원가입 할 수 없습니다.");
-//		}
-		Customer customer = new Customer();
-		inputInfo(customer);
-		customers.add(customer);
-
-	}
+//	public void signUp() {
+//
+//		Customer customer = new Customer();
+//		inputInfo(customer);
+//		customers.add(customer);
+//
+//	}
 
 	/**
 	 * 사용자의 정보를 입력하는 구간이다 (추후 UI에서 받아온 데이터를 통해 사용자 Customer의 정보 저장예정)
@@ -55,6 +56,51 @@ public class BankSystem {
 		customer.setName(scan.next());
 		customer.setAccount(createAccount());
 		System.out.println("사용자의 계좌번호는 " + customer.getAccount() + " 입니다.");
+
+	}
+	
+	public void signUp(String id, String pw, String name, String email, String phoneNumber) {
+		Customer customer = new Customer();
+		customer.setId(id);
+		customer.setPw(pw);
+		customer.setName(name);
+		customer.setEmail(email);
+		customer.setPhoneNumber(phoneNumber);
+		customer.setAccount(createAccount());
+		customers.add(customer);
+	}
+
+	public boolean login(String id, String pw) {
+		String msg = "등록된 고객이 없습니다.";
+		Iterator<Customer> i = customers.iterator();
+		while (i.hasNext()) {
+			Customer temp = i.next();
+			if (temp.getId().equals(id) && temp.getPw().equals(pw)) {
+				loginCustomer = temp;
+				return true;
+			}
+		}
+		return false;
+	}
+	
+
+
+	// 이체
+	public void bankTransfer() {
+		System.out.println("어느 고객에게 이체하실 건가요?");
+		String id = scan.next();
+		Customer customer = findCustomer(id);
+		System.out.println("얼마 이체하실 건가요?");
+		int transferMoney = scan.nextInt();
+
+		if (loginCustomer.getBalance() - transferMoney < 0) {
+			System.out.println("사용자의 금액보다 더 많은 금액을 이체할 수 없습니다");
+		} else {
+			customer.setBalance(customer.getBalance() + transferMoney);
+			loginCustomer.setBalance(loginCustomer.getBalance() - transferMoney);
+		}
+
+		System.out.println("현재 사용자의 잔고는 " + loginCustomer.getBalance() + "원 남았습니다");
 
 	}
 
@@ -154,8 +200,16 @@ public class BankSystem {
 	 * 현재 : console에서 출력 완성예정 : UI에서 출력 사용자의 정보 출력
 	 */
 	public void viewInfo(Customer customer) {
-		System.out.println(customer.getName() + "\t" + customer.getId() + "\t" + customer.getBalance());
+		System.out.println(customer.getName() + "\t" + customer.getId() + "\t" + customer.getAccount() + "\t\t"
+				+ customer.getBalance());
 
+	}
+
+	public void printAllCustomer() {
+		Iterator<Customer> i = customers.iterator();
+		while (i.hasNext()) {
+			viewInfo(i.next());
+		}
 	}
 
 	// 고객정보 출력
@@ -166,7 +220,7 @@ public class BankSystem {
 		System.out.print("어떤 고객을 찾으시나요(이름을 입력하세요) > ");
 		String findCustomer = scan.next();
 		System.out.println("-------------------------------------------");
-		System.out.println("이름\t아이디\t잔고");
+		System.out.println("이름\t아이디\t계좌번호\t\t\t잔고");
 		System.out.println("-------------------------------------------");
 
 		Iterator i = customers.iterator();
@@ -177,98 +231,54 @@ public class BankSystem {
 			}
 		}
 
-//		for (int i = 0; i < customers.length; i++) {
-//			if (customers[i] != null) {
-//				if (customers[i].getName().equals(findCustomer))
-//					viewInfo(customers[i]);
-//			} else if (i == customers.length)
-//				System.out.println("찾으시는 고객님이 없습니다.");
-//		}
 	}
 
-	public Customer checkCustomer(String name, String id, String password) {
-		System.out.print("어떤 고객님의 계좌를 찾으시나요? (이름을 입력해 주세요) > ");
-		// 추후 UI와 적용
+	public Customer findCustomer(String id) {
 
-		int count = 0;
-
-		Iterator i = customers.iterator();
-		while (i.hasNext()) {
-			Customer customer = (Customer) i.next();
-			while (count != 3) {
-				if (customer.getName().equals(name) && customer.getId().equals(id)
-						&& customer.getPw().equals(password)) {
-					// 올바르게 출력
-
-					break;
-				} else {
-					// 잘못 입력했습니다 다시 입력해주세요
-					count++;
-				}
+		Customer customer = null;
+		for (int i = 0; i < customers.size(); i++) {
+			if (customers.get(i).getId().equals(id)) {
+				customer = customers.get(i);
+				break;
 			}
 		}
-
-//		for (int i = 0; i < customers.length; i++) {
-//			if (customers[i] != null) {
-//				if (customers[i].getName().equals(findCustomer)) {
-//					System.out.print("ID를 입력해 주세요 > ");
-//					findId = scan.next();
-//					if (customers[i].getId().equals(findId)) {
-//						System.out.print("Password를 입력해 주세요 > ");
-//						findPw = scan.next();
-//						if (customers[i].getPw().equals(findPw))
-//							return customers[i];
-//						else {
-//							System.out.println("Password를 잘못 입력 하셨습니다.");
-//							if (count != 3) {
-//								i -= 1;
-//								count++;
-//							} else if (count == 3) {
-//								break;
-//							}
-//						}
-//					} else {
-//						System.out.println("ID를 잘못 입력 하셨습니다.");
-//						if (count != 3) {
-//							i -= 1;
-//							count++;
-//						} else if (count == 3) {
-//							break;
-//						}
-//					}
-//				}
-//			}
-//		}
-		System.out.println("찾으시는 회원이 없습니다.");
-		return null;
+		return customer;
 	}
 
-	// 예금
-	public void deposit(String name, String id, String pw) {
+	// 예금 + 시간정보 저장
+	public void deposit() {
 		int money;
-		Customer customer = checkCustomer(name, id, pw);
+		System.out.print("ID를 입력하세요 >> ");
+		String id = scan.next();
+		Customer customer = findCustomer(id);
 		if (customer != null) {
 			System.out.print("입금액 > ");
 			money = scan.nextInt();
 			customer.setBalance(customer.getBalance() + money);
+		} else {
+			System.out.println("해당 고객이 없습니다.");
 		}
 	}
 
 	// 출금
-	public void withdraw(String name, String id, String pw) {
+	public void withdraw() {
 		int money;
-		Customer customer = checkCustomer(name, id, pw);
+		System.out.print("ID를 입력하세요 >> ");
+
+		String id = scan.next();
+		Customer customer = findCustomer(id);
 		if (customer != null) {
 			System.out.print("출금액 > ");
 			money = scan.nextInt();
 			customer.setBalance(customer.getBalance() - money);
+		} else {
+			System.out.println("해당 고객이 없습니다");
 		}
 	}
 
 	// 잔고
-	public void printBalance(String name, String id, String pw) {
-		Customer customer = checkCustomer(name, id, pw);
-		System.out.println(customer.getName() + "님의 잔고는 " + customer.getBalance() + "원 입니다.");
+	public void printBalance() {
+		System.out.println(loginCustomer.getName() + "님의 잔고는 " + loginCustomer.getBalance() + "원 입니다.");
 	}
 
 	public void execute() {
@@ -276,33 +286,50 @@ public class BankSystem {
 
 		do {
 			System.out.println("------------------------------------------------------");
-			System.out.println("1. 회원가입 | 2. 고객정보 출력  |  3. 예금  | 4. 출금 | 5. 잔고 | 6.종료");
+			System.out.println("1. 회원가입 | 2. 로그인  | 3. 고객정보 출력  |  4. 예금  | 5. 출금 | 6. 잔고  | 7. 이체 | 8. 전고객출력 | 9.종료");
 			System.out.println("------------------------------------------------------");
 			System.out.print("선택 > ");
 			menuNum = scan.nextInt();
 			switch (menuNum) {
 			case 1:
-				signUp();
+//				signUp();
 				break;
 			case 2:
-				printCustomer();
+//				login();
 				break;
 			case 3:
-//				deposit();
+				printCustomer();
 				break;
 			case 4:
-//				withdraw();
+				deposit();
 				break;
 			case 5:
-//				printBalance();
+				withdraw();
 				break;
 			case 6:
+				if (loginCustomer != null) {
+					printBalance();
+				} else {
+					System.out.println("로그인 후 사용 가능합니다.");
+				}
+				break;
+			case 7:
+				if (loginCustomer != null) {
+					bankTransfer();
+				} else {
+					System.out.println("로그인 후 사용 가능합니다.");
+				}
+				break;
+			case 8:
+				printAllCustomer();
+			case 9:
 				setRun(false);
 				break;
 			default:
-				System.out.println("잘못된 입력입니다.(1~6)");
+				System.out.println("잘못된 입력입니다.(1~7)");
 			}
 		} while (run);
+
 	}
 
 	public void setRun(boolean run) {

@@ -4,7 +4,10 @@ public class Customer extends BankRelative{
 
 	private String account;
 	private int balance;
+	private String email;
+	private String phoneNumber;
 	private boolean vip;
+	
 	
 	public Customer() {
 		this.balance = 0;
@@ -13,6 +16,22 @@ public class Customer extends BankRelative{
 
 	public String getAccount() {
 		return account;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public String getPhoneNumber() {
+		return phoneNumber;
+	}
+
+	public void setPhoneNumber(String phoneNumber) {
+		this.phoneNumber = phoneNumber;
 	}
 
 	public void setAccount(String account) {

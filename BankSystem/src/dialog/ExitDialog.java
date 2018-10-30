@@ -19,7 +19,7 @@ public class ExitDialog extends Dialog {
 	Panel p1, p2;
 
 	public ExitDialog(Frame parent) {
-		super(parent, "Exit Dialog");
+		super(parent, "종료 다이얼로그");
 
 		p1 = new Panel();
 		p2 = new Panel();

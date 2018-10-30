@@ -11,14 +11,14 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
-public class LoginErrorDialog extends Dialog{
+public class MessageDialog extends Dialog{
 	Label la1, la2, la3;
 	Panel p1, p2;
 	public String msg = "아이디 or 비밀번호를 잘못 입력하셨습니다!";
 	Button checkButton;
 	
-	public LoginErrorDialog(Frame parent) {
-		super(parent, "로그인 다이얼로그");
+	public MessageDialog(Frame parent) {
+		super(parent, "메세지 다이얼로그");
 		p1 = new Panel();
 		p2 = new Panel();
 		la1 = new Label();

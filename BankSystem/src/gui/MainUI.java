@@ -6,15 +6,17 @@ import java.awt.Label;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
-import initpanel.InitPanel;
+import initpanel.LoginPanel;
+import system.BankSystem;
 
 public class MainUI extends Frame{
+	BankSystem bs = new BankSystem();
 	Label la[] = new Label[4];
-	InitPanel ip;
+	LoginPanel ip;
 	String direction[] = {"North", "East", "West", "South"};
 	
 	public MainUI() {
-		ip = new InitPanel(this);
+		ip = new LoginPanel(this, bs);
 		
 		this.setTitle("은행 업무 시스템");
 		this.setLayout(new BorderLayout());
