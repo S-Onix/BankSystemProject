@@ -1,6 +1,6 @@
 package person;
 
-public class Customer extends BankRelative{
+public class BankCustomer extends BankRelative{
 
 	private String account;
 	private int balance;
@@ -9,7 +9,7 @@ public class Customer extends BankRelative{
 	private boolean vip;
 	
 	
-	public Customer() {
+	public BankCustomer() {
 		this.balance = 0;
 		this.vip = false;
 	}

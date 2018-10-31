@@ -7,32 +7,40 @@ import java.awt.Choice;
 import java.awt.Dialog;
 import java.awt.Frame;
 import java.awt.Label;
-import java.awt.TextField;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.util.ArrayList;
+import java.util.Iterator;
 
+import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
-import person.Customer;
+import person.BankCustomer;
 import system.BankSystem;
 
 public class SignInDialog extends Dialog {
 
 	// 현재 시간 및 계좌 정보 출력
 
+	boolean isDistinct, checkPassword;
+
+	
+	String megStr2 = "중복된 아이디가 아닙니다.";
+	String megStr1 = "중복된 아이디가 맞습니다.";
+	
+	
 	BankSystem bs;
 
 	Label signInLb;
+	Label distinctMsg;
 
 	Label idLb, pwLb, pwReLb, nameLb, genderLb, phoneLb, emailLb;
 	Label hyponLb1, hyponLb2, hyponLb3;
-	JTextField idTf, pwTf, rePwTf, nameTf, phoneTf1, phoneTf2, emailTf;
-
+	JTextField idTf, nameTf, phoneTf1, phoneTf2, emailTf;
+	JPasswordField pwTf, rePwTf;
 	// 성별(라디오박스)
 	CheckboxGroup cg;
 	Checkbox man, woman;
@@ -48,8 +56,8 @@ public class SignInDialog extends Dialog {
 	String phoneFirst[] = { "02", "031", "032", "010" };
 
 	// 확인, 취소, 중복 다이얼로그
-	Dialog confirmD, cancelD, distinctD, messageD;
-	
+	Dialog confirmD, cancelD, distinctD;
+	MessageDialog messageD;
 
 	boolean isClose = false;
 
@@ -57,7 +65,6 @@ public class SignInDialog extends Dialog {
 		super(parent, "회원가입 다이얼로그");
 
 		this.bs = bs;
-
 		this.setBounds(200, 200, 380, 400);
 		this.setLayout(null);
 
@@ -76,7 +83,8 @@ public class SignInDialog extends Dialog {
 			@Override
 			public void keyTyped(KeyEvent ke) {
 				JTextField temp = (JTextField) ke.getSource();
-				if (temp.getText().length() >= 10) {
+				char c = ke.getKeyChar();
+				if (!isLetterOrNumber(c) || temp.getText().length() >= 10) {
 					ke.consume();
 				}
 			}
@@ -94,6 +102,15 @@ public class SignInDialog extends Dialog {
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
 				// 중복발생 로직 및 dialog 출력
+				if(isDistinct()) {
+					distinctMsg.setText(megStr1);
+					isDistinct = false;
+					distinctD.setVisible(true);
+				}else {
+					distinctMsg.setText(megStr2);
+					isDistinct = true;
+					distinctD.setVisible(true);
+				}
 			}
 		});
 
@@ -101,7 +118,7 @@ public class SignInDialog extends Dialog {
 		pwLb = new Label("PASSWORD");
 		pwLb.setBounds(20, 130, 80, 25);
 		this.add(pwLb);
-		pwTf = new JTextField();
+		pwTf = new JPasswordField();
 		pwTf.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyTyped(KeyEvent ke) {
@@ -114,12 +131,12 @@ public class SignInDialog extends Dialog {
 		pwTf.setBounds(100, 130, 150, 25);
 		this.add(pwTf);
 
-		rePwTf = new JTextField();
+		rePwTf = new JPasswordField();
 		rePwTf.setBounds(100, 160, 150, 25);
 		this.add(rePwTf);
 		rePwTf.addKeyListener(new KeyAdapter() {
 			@Override
-			public void keyTyped(KeyEvent ke) {
+			public void keyReleased(KeyEvent ke) {
 				if (pwTf.getText().equals(rePwTf.getText())) {
 					pwReLb.setText("일치");
 				} else
@@ -143,6 +160,10 @@ public class SignInDialog extends Dialog {
 			@Override
 			public void keyTyped(KeyEvent ke) {
 				JTextField temp = (JTextField) ke.getSource();
+				char c = ke.getKeyChar();
+				if (!isLetter(c)) {
+					ke.consume();
+				}
 				if (temp.getText().length() > 7) {
 					ke.consume();
 				}
@@ -198,6 +219,28 @@ public class SignInDialog extends Dialog {
 		phoneTf2 = new JTextField();
 		phoneTf2.setBounds(275, 300, 70, 25);
 
+		phoneTf1.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyTyped(KeyEvent ke) {
+				JTextField temp = (JTextField) ke.getSource();
+				char c = ke.getKeyChar();
+				if (!isNumber(c) || temp.getText().length() >= 4) {
+					ke.consume();
+				}
+			}
+		});
+
+		phoneTf2.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyTyped(KeyEvent ke) {
+				JTextField temp = (JTextField) ke.getSource();
+				char c = ke.getKeyChar();
+				if (!isNumber(c) || temp.getText().length() >= 4) {
+					ke.consume();
+				}
+			}
+		});
+
 		this.add(phoneFirstCho);
 		this.add(hyponLb2);
 		this.add(hyponLb3);
@@ -211,22 +254,18 @@ public class SignInDialog extends Dialog {
 
 		initCancelDialog();
 		initSaveDialog();
+		initDistinctDialog();
 
 		confirmButton.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				// TODO Auto-generated method stub
-				// 조건 모든 입력사항 처리
-				// JTextField idTf, pwTf, rePwTf, nameTf, phoneTf1, phoneTf2, emailTf;
-
-				if (!idTf.getText().equals(null) || !pwTf.getText().equals(null) || !nameTf.getText().equals(null)
-						|| !rePwTf.getText().equals(null) || !phoneTf1.getText().equals(null) || !phoneTf2.getText().equals(null)
-						|| !emailTf.getText().equals(null)) {
+				if (!isNull()) {
 					confirmD.setVisible(true);
-				}
-				else {
-					
+				} else {
+					// 메세지 다이얼로그 출력
+					signInLb.setBounds(100, 40, 400, 50);
+					signInLb.setText("모든  사항을 입력해주세요!");
 				}
 				// 추가해야함
 			}
@@ -260,7 +299,28 @@ public class SignInDialog extends Dialog {
 
 	}
 
-	public Dialog initCancelDialog() {
+	public boolean isNumber(char c) {
+		return Character.isDigit(c);
+	}
+
+	public boolean isLetter(char c) {
+		return Character.isLetter(c);
+	}
+
+	public boolean isLetterOrNumber(char c) {
+		return Character.isLetterOrDigit(c);
+	}
+
+	public boolean isNull() {
+		if (!idTf.getText().equals("") && !pwTf.getPassword().equals("") && !nameTf.getText().equals("")
+				&& !rePwTf.getPassword().equals("") && !phoneTf1.getText().equals("") && !phoneTf2.getText().equals("")
+				&& !emailTf.getText().equals("")) {
+			return false;
+		} else
+			return true;
+	}
+
+	public void initCancelDialog() {
 		cancelD = new Dialog(this);
 		Label msg = new Label("회원가입을 취소하겠습니까?");
 		Button yesButton = new Button("네");
@@ -302,11 +362,10 @@ public class SignInDialog extends Dialog {
 				cancelD.dispose();
 			}
 		});
-		return cancelD;
 
 	}
 
-	public Dialog initSaveDialog() {
+	public void initSaveDialog() {
 		confirmD = new Dialog(this);
 		Label msg = new Label("회원가입을 완료했습니다");
 		Button yes = new Button("확인");
@@ -325,6 +384,7 @@ public class SignInDialog extends Dialog {
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
 				saveCustomer();
+//				initField();
 				dispose();
 
 			}
@@ -335,12 +395,10 @@ public class SignInDialog extends Dialog {
 		confirmD.addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent e) {
-				// saveCustomer(customer 삽입);
-				confirmD.dispose();
+//				saveCustomer();
+				dispose();
 			}
 		});
-
-		return confirmD;
 
 	}
 
@@ -354,6 +412,49 @@ public class SignInDialog extends Dialog {
 
 	public void initDistinctDialog() {
 		distinctD = new Dialog(this);
+		
+		distinctMsg = new Label();
+		Button yes = new Button("확인");
+		
+		distinctD.setTitle("중복 아이디 체크");
+		distinctD.setLayout(null);
+
+		distinctMsg.setBounds(90, 40, 160, 30);
+		yes.setBounds(135, 75, 50, 30);
+
+		distinctD.add(distinctMsg);
+		distinctD.add(yes);
+
+		yes.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				distinctD.dispose();
+
+			}
+		});
+
+		distinctD.setBounds(0, 0, 300, 120);
+		distinctD.setModal(true);
+		distinctD.addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosing(WindowEvent e) {
+				// saveCustomer(customer 삽입);
+				distinctD.dispose();
+			}
+		});
+	}
+	
+	
+
+	public boolean isDistinct() {
+		Iterator i = bs.getCustomers().iterator();
+		while (i.hasNext()) {
+			BankCustomer temp = (BankCustomer) i.next();
+			if (temp.getId().equals(idTf.getText()))
+				return true;
+		}
+		return false;
 	}
 
 	public void saveCustomer() {

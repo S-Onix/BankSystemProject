@@ -5,7 +5,7 @@ import java.util.Iterator;
 import java.util.Random;
 import java.util.Scanner;
 
-import person.Customer;
+import person.BankCustomer;
 
 public class BankSystem {
 	// has a 관계 : BankSystem 클래스는 Customer 객체를 가질 수 있다.
@@ -13,12 +13,12 @@ public class BankSystem {
 
 	public Scanner scan;
 	public boolean run;
-	public ArrayList<Customer> customers;
+	public ArrayList<BankCustomer> customers;
 	public int count = 0;
 	private Random random;
 	StringBuffer sb;
 
-	private Customer loginCustomer;
+	private BankCustomer loginCustomer;
 
 	public BankSystem() {
 		scan = new Scanner(System.in);
@@ -27,27 +27,20 @@ public class BankSystem {
 	}
 	
 	
-	public ArrayList<Customer> getCustomers() {
+	public ArrayList<BankCustomer> getCustomers() {
 		return customers;
 	}
 	
-	public Customer getLoginCustomer() {
+	public BankCustomer getLoginCustomer() {
 		return loginCustomer;
 	}
 
-	// 회원가입
-//	public void signUp() {
-//
-//		Customer customer = new Customer();
-//		inputInfo(customer);
-//		customers.add(customer);
-//
-//	}
+
 
 	/**
 	 * 사용자의 정보를 입력하는 구간이다 (추후 UI에서 받아온 데이터를 통해 사용자 Customer의 정보 저장예정)
 	 */
-	private void inputInfo(Customer customer) {
+	private void inputInfo(BankCustomer customer) {
 		System.out.print("ID > ");
 		customer.setId(scan.next());
 		System.out.print("PASSWORD > ");
@@ -60,7 +53,7 @@ public class BankSystem {
 	}
 	
 	public void signUp(String id, String pw, String name, String email, String phoneNumber) {
-		Customer customer = new Customer();
+		BankCustomer customer = new BankCustomer();
 		customer.setId(id);
 		customer.setPw(pw);
 		customer.setName(name);
@@ -72,9 +65,9 @@ public class BankSystem {
 
 	public boolean login(String id, String pw) {
 		String msg = "등록된 고객이 없습니다.";
-		Iterator<Customer> i = customers.iterator();
+		Iterator<BankCustomer> i = customers.iterator();
 		while (i.hasNext()) {
-			Customer temp = i.next();
+			BankCustomer temp = i.next();
 			if (temp.getId().equals(id) && temp.getPw().equals(pw)) {
 				loginCustomer = temp;
 				return true;
@@ -86,10 +79,11 @@ public class BankSystem {
 
 
 	// 이체
+	
 	public void bankTransfer() {
 		System.out.println("어느 고객에게 이체하실 건가요?");
 		String id = scan.next();
-		Customer customer = findCustomer(id);
+		BankCustomer customer = findCustomer(id);
 		System.out.println("얼마 이체하실 건가요?");
 		int transferMoney = scan.nextInt();
 
@@ -199,14 +193,14 @@ public class BankSystem {
 	/**
 	 * 현재 : console에서 출력 완성예정 : UI에서 출력 사용자의 정보 출력
 	 */
-	public void viewInfo(Customer customer) {
+	public void viewInfo(BankCustomer customer) {
 		System.out.println(customer.getName() + "\t" + customer.getId() + "\t" + customer.getAccount() + "\t\t"
 				+ customer.getBalance());
 
 	}
 
 	public void printAllCustomer() {
-		Iterator<Customer> i = customers.iterator();
+		Iterator<BankCustomer> i = customers.iterator();
 		while (i.hasNext()) {
 			viewInfo(i.next());
 		}
@@ -225,7 +219,7 @@ public class BankSystem {
 
 		Iterator i = customers.iterator();
 		while (i.hasNext()) {
-			Customer customer = (Customer) i.next();
+			BankCustomer customer = (BankCustomer) i.next();
 			if (customer.getName().equals(findCustomer)) {
 				viewInfo(customer);
 			}
@@ -233,9 +227,9 @@ public class BankSystem {
 
 	}
 
-	public Customer findCustomer(String id) {
+	public BankCustomer findCustomer(String id) {
 
-		Customer customer = null;
+		BankCustomer customer = null;
 		for (int i = 0; i < customers.size(); i++) {
 			if (customers.get(i).getId().equals(id)) {
 				customer = customers.get(i);
@@ -250,7 +244,7 @@ public class BankSystem {
 		int money;
 		System.out.print("ID를 입력하세요 >> ");
 		String id = scan.next();
-		Customer customer = findCustomer(id);
+		BankCustomer customer = findCustomer(id);
 		if (customer != null) {
 			System.out.print("입금액 > ");
 			money = scan.nextInt();
@@ -266,7 +260,7 @@ public class BankSystem {
 		System.out.print("ID를 입력하세요 >> ");
 
 		String id = scan.next();
-		Customer customer = findCustomer(id);
+		BankCustomer customer = findCustomer(id);
 		if (customer != null) {
 			System.out.print("출금액 > ");
 			money = scan.nextInt();

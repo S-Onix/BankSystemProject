@@ -39,7 +39,6 @@ public class LoginPanel extends Panel {
 
 }
 
-
 class TopPanel extends Canvas {
 	Panel p;
 	Image img;
@@ -78,27 +77,8 @@ class BottomPanel extends Panel implements ActionListener {
 		this.setBackground(Color.gray);
 		this.bs = bs;
 
-		sd = new SignInDialog(parent, bs);
-		led = new LoginErrorDialog(parent);
-		ed = new ExitDialog(parent);
-
-		gBag = new GridBagLayout();
-		emptyLb = new Label[11];
-		for (int i = 0; i < emptyLb.length; i++) {
-			emptyLb[i] = new Label();
-		}
-
-		idLb = new Label("ID : ", Label.CENTER);
-		pwLb = new Label("PW : ", Label.CENTER);
-		idTf = new TextField();
-		pwTf = new TextField();
-		loginButton = new Button("로그인");
-		signinButton = new Button("회원가입");
-		exitButton = new Button("종료");
-
-		loginButton.addActionListener(this);
-		signinButton.addActionListener(this);
-		exitButton.addActionListener(this);
+		initPanel(parent, bs);
+		buttonAction();
 
 		this.setLayout(gBag);
 		gbinsert(idLb, 1, 1, 2, 1);
@@ -119,7 +99,33 @@ class BottomPanel extends Panel implements ActionListener {
 		gbinsert(emptyLb[8], 4, 4, 5, 1);
 		gbinsert(emptyLb[9], 4, 6, 5, 1);
 		gbinsert(emptyLb[10], 6, 5, 1, 1);
-		
+
+	}
+
+	public void buttonAction() {
+		loginButton.addActionListener(this);
+		signinButton.addActionListener(this);
+		exitButton.addActionListener(this);
+	}
+
+	public void initPanel(Frame parent, BankSystem bs) {
+		sd = new SignInDialog(parent, bs);
+		led = new LoginErrorDialog(parent);
+		ed = new ExitDialog(parent);
+
+		gBag = new GridBagLayout();
+		emptyLb = new Label[11];
+		for (int i = 0; i < emptyLb.length; i++) {
+			emptyLb[i] = new Label();
+		}
+
+		idLb = new Label("ID : ", Label.CENTER);
+		pwLb = new Label("PW : ", Label.CENTER);
+		idTf = new TextField();
+		pwTf = new TextField();
+		loginButton = new Button("로그인");
+		signinButton = new Button("회원가입");
+		exitButton = new Button("종료");
 	}
 
 	public void gbinsert(Component c, int x, int y, int w, int h) {
@@ -141,10 +147,9 @@ class BottomPanel extends Panel implements ActionListener {
 				System.out.println("로그인 성공");
 				led.getLabel().setText("로그인 성공!");
 				led.setVisible(true);
-				//다음 화면 이동
-				
-			}
-			else {
+				// 다음 화면 이동
+
+			} else {
 				led.getLabel().setText(led.msg);
 				led.setVisible(true);
 			}
