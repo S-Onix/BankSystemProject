@@ -25,13 +25,13 @@ public class SignInDialog extends Dialog {
 
 	// 현재 시간 및 계좌 정보 출력
 
-	boolean isDistinct, checkPassword;
+	private boolean isDistinct = false;
+	private boolean checkPassword = false;
+	private boolean isClose = false;
 
-	
 	String megStr2 = "중복된 아이디가 아닙니다.";
 	String megStr1 = "중복된 아이디가 맞습니다.";
-	
-	
+
 	BankSystem bs;
 
 	Label signInLb;
@@ -41,6 +41,7 @@ public class SignInDialog extends Dialog {
 	Label hyponLb1, hyponLb2, hyponLb3;
 	JTextField idTf, nameTf, phoneTf1, phoneTf2, emailTf;
 	JPasswordField pwTf, rePwTf;
+
 	// 성별(라디오박스)
 	CheckboxGroup cg;
 	Checkbox man, woman;
@@ -58,8 +59,6 @@ public class SignInDialog extends Dialog {
 	// 확인, 취소, 중복 다이얼로그
 	Dialog confirmD, cancelD, distinctD;
 	MessageDialog messageD;
-
-	boolean isClose = false;
 
 	public SignInDialog(Frame parent, BankSystem bs) {
 		super(parent, "회원가입 다이얼로그");
@@ -102,11 +101,11 @@ public class SignInDialog extends Dialog {
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
 				// 중복발생 로직 및 dialog 출력
-				if(isDistinct()) {
+				if (isDistinct()) {
 					distinctMsg.setText(megStr1);
 					isDistinct = false;
 					distinctD.setVisible(true);
-				}else {
+				} else {
 					distinctMsg.setText(megStr2);
 					isDistinct = true;
 					distinctD.setVisible(true);
@@ -139,8 +138,11 @@ public class SignInDialog extends Dialog {
 			public void keyReleased(KeyEvent ke) {
 				if (pwTf.getText().equals(rePwTf.getText())) {
 					pwReLb.setText("일치");
-				} else
+					setCheckPassword(true);
+				} else {
 					pwReLb.setText("불일치");
+					setCheckPassword(false);
+				}
 			}
 		});
 
@@ -383,9 +385,13 @@ public class SignInDialog extends Dialog {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
-				saveCustomer();
-//				initField();
-				dispose();
+				if ((!isDistinct() && isCheckPassword())) {
+					saveCustomer();
+					initField();
+					dispose();
+				} else {
+
+				}
 
 			}
 		});
@@ -395,7 +401,7 @@ public class SignInDialog extends Dialog {
 		confirmD.addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent e) {
-//				saveCustomer();
+				// saveCustomer();
 				dispose();
 			}
 		});
@@ -412,10 +418,10 @@ public class SignInDialog extends Dialog {
 
 	public void initDistinctDialog() {
 		distinctD = new Dialog(this);
-		
+
 		distinctMsg = new Label();
 		Button yes = new Button("확인");
-		
+
 		distinctD.setTitle("중복 아이디 체크");
 		distinctD.setLayout(null);
 
@@ -444,16 +450,39 @@ public class SignInDialog extends Dialog {
 			}
 		});
 	}
-	
-	
+
+	public boolean isCheckPassword() {
+		return checkPassword;
+	}
+
+	public void setCheckPassword(boolean checkPassword) {
+		this.checkPassword = checkPassword;
+	}
+
+	public void setDistinct(boolean isDistinct) {
+		this.isDistinct = isDistinct;
+	}
+
+	public void initField() {
+		idTf.setText("");
+		pwTf.setText("");
+		nameTf.setText("");
+		rePwTf.setText("");
+		phoneTf1.setText("");
+		phoneTf2.setText("");
+		emailTf.setText("");
+	}
 
 	public boolean isDistinct() {
 		Iterator i = bs.getCustomers().iterator();
 		while (i.hasNext()) {
 			BankCustomer temp = (BankCustomer) i.next();
-			if (temp.getId().equals(idTf.getText()))
+			if (temp.getId().equals(idTf.getText())) {
+				setDistinct(true);
 				return true;
+			}
 		}
+		setDistinct(false);
 		return false;
 	}
 
