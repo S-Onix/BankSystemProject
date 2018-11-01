@@ -6,16 +6,16 @@ import java.awt.Label;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
-import initpanel.LoginPanel;
+import gui.loginpanel.LoginPanel;
 import system.BankSystem;
 
-public class MainUI extends Frame{
+public class InitFrame extends Frame{
 	BankSystem bs = new BankSystem();
 	Label la[] = new Label[4];
 	LoginPanel ip;
 	String direction[] = {"North", "East", "West", "South"};
 	
-	public MainUI() {
+	public InitFrame() {
 		ip = new LoginPanel(this, bs);
 		
 		this.setTitle("은행 업무 시스템");
@@ -25,7 +25,6 @@ public class MainUI extends Frame{
 			la[i] = new Label("");	
 		}
 		
-		//새로운 패널 저장 (CardLayout)
 		for(int i = 0 ; i < la.length; i++) {
 			this.add(la[i], direction[i]);
 		}
@@ -45,7 +44,7 @@ public class MainUI extends Frame{
 	}
 	
 	public static void main(String[] args) {
-		new MainUI();
+		new InitFrame();
 	}
 	
 }

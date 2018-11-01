@@ -1,9 +1,17 @@
 package system;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Random;
 import java.util.Scanner;
+import java.util.StringTokenizer;
 
 import person.BankCustomer;
 
@@ -20,22 +28,67 @@ public class BankSystem {
 
 	private BankCustomer loginCustomer;
 
-	public BankSystem() {
+	public BankSystem(){
 		scan = new Scanner(System.in);
 		run = true;
 		customers = new ArrayList<>();
+		initCustomers();
 	}
-	
-	
+
+	// 파일로부터 고객의 데이터 초기화
+	public void initCustomers() {
+
+		FileReader fr = null;
+		BufferedReader br = null;
+		try {
+			fr = new FileReader(new File("D:/yms/bank/BankSystemProject/BankSystem/customerDB/customers.txt"));
+			br = new BufferedReader(fr);
+			StringTokenizer st;
+			String line = "";
+			while((line = br.readLine()) != null) {
+				st = new StringTokenizer(line, " ");
+				while(st.hasMoreTokens()) {
+					BankCustomer bc = new BankCustomer();
+					bc.setId(st.nextToken());
+					bc.setPw(st.nextToken());
+					bc.setName(st.nextToken());
+					bc.setEmail(st.nextToken());
+					bc.setPhoneNumber(st.nextToken());
+					bc.setAccount(st.nextToken());
+					bc.setBalance(new Integer(st.nextToken()));
+					customers.add(bc);
+				}
+			}
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (NumberFormatException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			try {
+				br.close();
+				fr.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+				
+		}
+		
+	}
+
 	public ArrayList<BankCustomer> getCustomers() {
 		return customers;
 	}
-	
+
 	public BankCustomer getLoginCustomer() {
 		return loginCustomer;
 	}
-
-
 
 	/**
 	 * 사용자의 정보를 입력하는 구간이다 (추후 UI에서 받아온 데이터를 통해 사용자 Customer의 정보 저장예정)
@@ -51,7 +104,7 @@ public class BankSystem {
 		System.out.println("사용자의 계좌번호는 " + customer.getAccount() + " 입니다.");
 
 	}
-	
+
 	public void signUp(String id, String pw, String name, String email, String phoneNumber) {
 		BankCustomer customer = new BankCustomer();
 		customer.setId(id);
@@ -61,6 +114,19 @@ public class BankSystem {
 		customer.setPhoneNumber(phoneNumber);
 		customer.setAccount(createAccount());
 		customers.add(customer);
+		
+		/* 추후 txt 파일에 회원정보 추가하기 위한 코드 (어디에 작성하는 것이 좋은지는 조금더 생각해보기)
+		StringBuffer sb = new StringBuffer();
+		sb.append(customer.getId() + " ");
+		sb.append(customer.getPw() + " ");
+		sb.append(customer.getName() + " ");
+		sb.append(customer.getEmail() + " ");
+		sb.append(customer.getPhoneNumber() + " ");
+		sb.append(customer.getAccount() + " ");
+		sb.append(customer.getBalance());
+		*/
+		
+		
 	}
 
 	public boolean login(String id, String pw) {
@@ -75,11 +141,9 @@ public class BankSystem {
 		}
 		return false;
 	}
-	
-
 
 	// 이체
-	
+
 	public void bankTransfer() {
 		System.out.println("어느 고객에게 이체하실 건가요?");
 		String id = scan.next();
@@ -278,6 +342,12 @@ public class BankSystem {
 	public void execute() {
 		int menuNum;
 
+		Iterator i = customers.iterator();
+		while (i.hasNext()) {
+			BankCustomer temp = (BankCustomer) i.next();
+			System.out.println(temp.getName() + " " + temp.getId() + " " + temp.getAccount() + " " + temp.getBalance());
+		}
+
 		do {
 			System.out.println("------------------------------------------------------");
 			System.out.println("1. 회원가입 | 2. 로그인  | 3. 고객정보 출력  |  4. 예금  | 5. 출금 | 6. 잔고  | 7. 이체 | 8. 전고객출력 | 9.종료");
@@ -286,10 +356,10 @@ public class BankSystem {
 			menuNum = scan.nextInt();
 			switch (menuNum) {
 			case 1:
-//				signUp();
+				// signUp();
 				break;
 			case 2:
-//				login();
+				// login();
 				break;
 			case 3:
 				printCustomer();

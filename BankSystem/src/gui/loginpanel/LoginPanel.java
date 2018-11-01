@@ -1,4 +1,4 @@
-package initpanel;
+package gui.loginpanel;
 
 import java.awt.BorderLayout;
 import java.awt.Button;
@@ -18,14 +18,18 @@ import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.JPasswordField;
+
 import dialog.ExitDialog;
 import dialog.LoginErrorDialog;
 import dialog.SignInDialog;
+import gui.UserMainFrame;
 import system.BankSystem;
 
 public class LoginPanel extends Panel {
 	TopPanel tp;
 	BottomPanel bp;
+	boolean alive = false;
 
 	public LoginPanel(Frame parent, BankSystem bs) {
 		tp = new TopPanel();
@@ -35,6 +39,17 @@ public class LoginPanel extends Panel {
 
 		this.add(tp.getPanel());
 		this.add(bp);
+	}
+	
+	public Panel getPanel() {
+		return this;
+	}
+	
+	public boolean isAlive() {
+		return alive;
+	}
+	public void setAlive(boolean alive) {
+		this.alive = alive;
 	}
 
 }
@@ -65,17 +80,20 @@ class TopPanel extends Canvas {
 class BottomPanel extends Panel implements ActionListener {
 	GridBagLayout gBag;
 	Label idLb, pwLb;
-	TextField idTf, pwTf;
+	TextField idTf;
+	JPasswordField pwTf;
 	Button loginButton, signinButton, exitButton;
 	Label[] emptyLb;
 	SignInDialog sd;
 	LoginErrorDialog led;
 	ExitDialog ed;
 	BankSystem bs;
+	Frame parent;
 
 	public BottomPanel(Frame parent, BankSystem bs) {
 		this.setBackground(Color.gray);
 		this.bs = bs;
+		this.parent = parent;
 
 		initPanel(parent, bs);
 		buttonAction();
@@ -122,7 +140,7 @@ class BottomPanel extends Panel implements ActionListener {
 		idLb = new Label("ID : ", Label.CENTER);
 		pwLb = new Label("PW : ", Label.CENTER);
 		idTf = new TextField();
-		pwTf = new TextField();
+		pwTf = new JPasswordField();
 		loginButton = new Button("로그인");
 		signinButton = new Button("회원가입");
 		exitButton = new Button("종료");
@@ -145,9 +163,9 @@ class BottomPanel extends Panel implements ActionListener {
 		if (e.getSource().equals(loginButton)) {
 			if (bs.login(idTf.getText(), pwTf.getText())) {
 				System.out.println("로그인 성공");
-				led.getLabel().setText("로그인 성공!");
-				led.setVisible(true);
-				// 다음 화면 이동
+				UserMainFrame umf = new UserMainFrame(parent);
+				parent.setEnabled(false);
+				
 
 			} else {
 				led.getLabel().setText(led.msg);

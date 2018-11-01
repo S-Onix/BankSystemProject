@@ -1,6 +1,5 @@
 package dialog;
 
-import java.awt.BorderLayout;
 import java.awt.Button;
 import java.awt.Dialog;
 import java.awt.Frame;
@@ -12,14 +11,20 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
+import gui.InitFrame;
+import gui.UserMainFrame;
+
 public class ExitDialog extends Dialog {
 	Label la1, la2, la3, la4, la5;
 	Label msgLb;
 	Button exitButton, closeButton;
 	Panel p1, p2;
+	Frame parent;
 
 	public ExitDialog(Frame parent) {
 		super(parent, "종료 다이얼로그");
+		
+		this.parent = parent;
 
 		p1 = new Panel();
 		p2 = new Panel();
@@ -61,7 +66,13 @@ public class ExitDialog extends Dialog {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
-				System.exit(0);
+				if(parent instanceof UserMainFrame) {
+					parent.dispose();
+					//InitFrame이 동작할 수 있도록 설정해야함
+				}
+				if(parent instanceof InitFrame) {
+					System.exit(0);
+				}
 			}
 		});
 
@@ -74,4 +85,7 @@ public class ExitDialog extends Dialog {
 			}
 		});
 	}
+
+	
+	
 }

@@ -1,9 +1,9 @@
 package system;
 
-import gui.MainUI;
+import gui.InitFrame;
 
 public class Main {
 	public Main() {
-		new MainUI();
+		new InitFrame();
 	}
 }
