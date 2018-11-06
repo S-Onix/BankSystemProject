@@ -10,6 +10,7 @@ public class DipositPanel extends Panel{
 		this.parent = parent;
 		this.setBackground(Color.GREEN);
 		this.setVisible(true);
+		
 	}
 
 }

@@ -41,7 +41,8 @@ public class BankSystem {
 		FileReader fr = null;
 		BufferedReader br = null;
 		try {
-			fr = new FileReader(new File("D:/yms/bank/BankSystemProject/BankSystem/customerDB/customers.txt"));
+//			fr = new FileReader(new File("D:/yms/bank/BankSystemProject/BankSystem/customerDB/customers.txt"));
+			fr = new FileReader(new File("C:/BankSystemProject/BankSystem/customerDB/customers.txt"));
 			br = new BufferedReader(fr);
 			StringTokenizer st;
 			String line = "";

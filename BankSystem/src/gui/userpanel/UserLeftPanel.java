@@ -17,9 +17,11 @@ public class UserLeftPanel extends Panel implements ActionListener {
 	String bStr[] = { "예금", "출금", "이체", "조회", "종료" };
 	Frame parent;
 	ExitDialog ed;
+	UserRightPanel rightPanel;
 
-	public UserLeftPanel(Frame parent) {
+	public UserLeftPanel(Frame parent, UserRightPanel rightPanel) {
 		this.parent = parent;
+		this.rightPanel = rightPanel;
 		this.setLayout(new GridLayout(0, 1, 0, 10));
 		initComponent();
 		addComponent();
@@ -66,12 +68,16 @@ public class UserLeftPanel extends Panel implements ActionListener {
 		switch (buttonName) {
 		case "예금":
 			// 예금 패널로 바꿔주기 (cardlayout에서)
+			rightPanel.show(buttonName);
 			break;
 		case "출금":
+			rightPanel.show(buttonName);
 			break;
 		case "이체":
+			rightPanel.show(buttonName);
 			break;
 		case "조회":
+			rightPanel.show(buttonName);
 			break;
 		case "종료":
 			// 다이얼로그 출력 후 parent frame 종료

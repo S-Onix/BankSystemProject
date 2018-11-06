@@ -16,13 +16,21 @@ public class UserRightPanel extends Panel{
 	WithdrawPanel wp;
 	TransferPanel tp;
 	SearchPanel sp;
+	private CardLayout card;
 	
 	
 	public UserRightPanel(Frame parent) {
 		this.parent = parent;
 		this.setBackground(Color.BLACK);
-		this.setLayout(new CardLayout());
+		
+		card = new CardLayout();
+		this.setLayout(card);
+		
+		initRightPanel();
+		addPanel();
+		
 		this.setVisible(true);
+		
 	}
 	
 	public void initRightPanel() {
@@ -43,6 +51,8 @@ public class UserRightPanel extends Panel{
 	public Panel getPanel() {
 		return this;
 	}
-	
-	
+
+	public void show(String cardName) {
+		card.show(this, cardName);
+	}
 }
