@@ -30,10 +30,6 @@ public class UserLeftPanel extends Panel implements ActionListener {
 		this.setVisible(true);
 	}
 
-	public Panel getPanel() {
-		return this;
-	}
-
 	public void initComponent() {
 		ed = new ExitDialog(parent);
 		for (int i = 0; i < button.length; i++) {

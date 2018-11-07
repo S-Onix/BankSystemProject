@@ -7,6 +7,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Random;
@@ -15,7 +16,7 @@ import java.util.StringTokenizer;
 
 import person.BankCustomer;
 
-public class BankSystem {
+public class BankSystem implements Bank {
 	// has a 관계 : BankSystem 클래스는 Customer 객체를 가질 수 있다.
 	// scanner 부분은 전부 UI에서 데이터를 받아와야 함.
 
@@ -28,27 +29,31 @@ public class BankSystem {
 
 	private BankCustomer loginCustomer;
 
-	public BankSystem(){
+	public BankSystem() {
 		scan = new Scanner(System.in);
 		run = true;
 		customers = new ArrayList<>();
 		initCustomers();
 	}
 
+	/**
+	 * 사용자 검사
+	 */
 	// 파일로부터 고객의 데이터 초기화
 	public void initCustomers() {
 
 		FileReader fr = null;
 		BufferedReader br = null;
 		try {
-//			fr = new FileReader(new File("D:/yms/bank/BankSystemProject/BankSystem/customerDB/customers.txt"));
-			fr = new FileReader(new File("C:/BankSystemProject/BankSystem/customerDB/customers.txt"));
+			fr = new FileReader(new File("D:/yms/bank/BankSystemProject/BankSystem/customerDB/customers.txt"));
+			// fr = new FileReader(new
+			// File("C:/BankSystemProject/BankSystem/customerDB/customers.txt"));
 			br = new BufferedReader(fr);
 			StringTokenizer st;
 			String line = "";
-			while((line = br.readLine()) != null) {
+			while ((line = br.readLine()) != null) {
 				st = new StringTokenizer(line, " ");
-				while(st.hasMoreTokens()) {
+				while (st.hasMoreTokens()) {
 					BankCustomer bc = new BankCustomer();
 					bc.setId(st.nextToken());
 					bc.setPw(st.nextToken());
@@ -77,32 +82,25 @@ public class BankSystem {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			
-				
+
 		}
-		
+
 	}
 
-	public ArrayList<BankCustomer> getCustomers() {
-		return customers;
-	}
+	public void updateCustomer() {
+		FileWriter fw = null;
+		BufferedWriter bw = null;
 
-	public BankCustomer getLoginCustomer() {
-		return loginCustomer;
-	}
+		try {
+			fw = new FileWriter(new File("D:/yms/bank/BankSystemProject/BankSystem/customerDB/customers.txt"));
+			// FileWriter fr = new FileReader(new
+			// File("C:/BankSystemProject/BankSystem/customerDB/customers.txt"));
+			StringBuffer sb = new StringBuffer();
 
-	/**
-	 * 사용자의 정보를 입력하는 구간이다 (추후 UI에서 받아온 데이터를 통해 사용자 Customer의 정보 저장예정)
-	 */
-	private void inputInfo(BankCustomer customer) {
-		System.out.print("ID > ");
-		customer.setId(scan.next());
-		System.out.print("PASSWORD > ");
-		customer.setPw(scan.next());
-		System.out.print("이름 > ");
-		customer.setName(scan.next());
-		customer.setAccount(createAccount());
-		System.out.println("사용자의 계좌번호는 " + customer.getAccount() + " 입니다.");
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 	}
 
@@ -115,19 +113,8 @@ public class BankSystem {
 		customer.setPhoneNumber(phoneNumber);
 		customer.setAccount(createAccount());
 		customers.add(customer);
-		
-		/* 추후 txt 파일에 회원정보 추가하기 위한 코드 (어디에 작성하는 것이 좋은지는 조금더 생각해보기)
-		StringBuffer sb = new StringBuffer();
-		sb.append(customer.getId() + " ");
-		sb.append(customer.getPw() + " ");
-		sb.append(customer.getName() + " ");
-		sb.append(customer.getEmail() + " ");
-		sb.append(customer.getPhoneNumber() + " ");
-		sb.append(customer.getAccount() + " ");
-		sb.append(customer.getBalance());
-		*/
-		
-		
+		// TODO : file update
+
 	}
 
 	public boolean login(String id, String pw) {
@@ -143,7 +130,24 @@ public class BankSystem {
 		return false;
 	}
 
-	// 이체
+	
+	/**
+	 * 로그인 사용자 동작
+	 */
+	public BankCustomer getLoginCustomer() {
+		return loginCustomer;
+	}
+	
+	@Override
+	public void deposit(int money) {
+		loginCustomer.setBalance(loginCustomer.getBalance() + money);
+	}
+
+	@Override
+	// TODO : UI에서 제어
+	public void withdraw(int money) {
+		loginCustomer.setBalance(loginCustomer.getBalance() - money);
+	}
 
 	public void bankTransfer() {
 		System.out.println("어느 고객에게 이체하실 건가요?");
@@ -162,6 +166,38 @@ public class BankSystem {
 		System.out.println("현재 사용자의 잔고는 " + loginCustomer.getBalance() + "원 남았습니다");
 
 	}
+
+	public int getCustomerBalance() {
+		return loginCustomer.getBalance();
+	}
+	
+	/**
+	 * 메니저 관련 동작
+	 */
+	public ArrayList<BankCustomer> getCustomers() {
+		return customers;
+	}
+
+	
+
+	/**
+	 * 사용자의 정보를 입력하는 구간이다 (추후 UI에서 받아온 데이터를 통해 사용자 Customer의 정보 저장예정)
+	 */
+	private void inputInfo(BankCustomer customer) {
+		System.out.print("ID > ");
+		customer.setId(scan.next());
+		System.out.print("PASSWORD > ");
+		customer.setPw(scan.next());
+		System.out.print("이름 > ");
+		customer.setName(scan.next());
+		customer.setAccount(createAccount());
+		System.out.println("사용자의 계좌번호는 " + customer.getAccount() + " 입니다.");
+
+	}
+
+
+	// 이체
+
 
 	public String createAccount() {
 
@@ -304,41 +340,7 @@ public class BankSystem {
 		return customer;
 	}
 
-	// 예금 + 시간정보 저장
-	public void deposit() {
-		int money;
-		System.out.print("ID를 입력하세요 >> ");
-		String id = scan.next();
-		BankCustomer customer = findCustomer(id);
-		if (customer != null) {
-			System.out.print("입금액 > ");
-			money = scan.nextInt();
-			customer.setBalance(customer.getBalance() + money);
-		} else {
-			System.out.println("해당 고객이 없습니다.");
-		}
-	}
 
-	// 출금
-	public void withdraw() {
-		int money;
-		System.out.print("ID를 입력하세요 >> ");
-
-		String id = scan.next();
-		BankCustomer customer = findCustomer(id);
-		if (customer != null) {
-			System.out.print("출금액 > ");
-			money = scan.nextInt();
-			customer.setBalance(customer.getBalance() - money);
-		} else {
-			System.out.println("해당 고객이 없습니다");
-		}
-	}
-
-	// 잔고
-	public void printBalance() {
-		System.out.println(loginCustomer.getName() + "님의 잔고는 " + loginCustomer.getBalance() + "원 입니다.");
-	}
 
 	public void execute() {
 		int menuNum;
@@ -366,14 +368,14 @@ public class BankSystem {
 				printCustomer();
 				break;
 			case 4:
-				deposit();
+				// deposit();
 				break;
 			case 5:
-				withdraw();
+				// withdraw();
 				break;
 			case 6:
 				if (loginCustomer != null) {
-					printBalance();
+//					printBalance();
 				} else {
 					System.out.println("로그인 후 사용 가능합니다.");
 				}

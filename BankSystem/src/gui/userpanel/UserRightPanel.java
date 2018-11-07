@@ -9,6 +9,7 @@ import gui.userpanel.rightpanel.DipositPanel;
 import gui.userpanel.rightpanel.SearchPanel;
 import gui.userpanel.rightpanel.TransferPanel;
 import gui.userpanel.rightpanel.WithdrawPanel;
+import system.BankSystem;
 
 public class UserRightPanel extends Panel{
 	Frame parent;
@@ -17,11 +18,11 @@ public class UserRightPanel extends Panel{
 	TransferPanel tp;
 	SearchPanel sp;
 	private CardLayout card;
+	BankSystem bs;
 	
-	
-	public UserRightPanel(Frame parent) {
-		this.parent = parent;
+	public UserRightPanel(BankSystem bs) {
 		this.setBackground(Color.BLACK);
+		this.bs = bs;
 		
 		card = new CardLayout();
 		this.setLayout(card);
@@ -34,10 +35,10 @@ public class UserRightPanel extends Panel{
 	}
 	
 	public void initRightPanel() {
-		dp = new DipositPanel(this);
-		wp = new WithdrawPanel(this);
-		tp = new TransferPanel(this);
-		sp = new SearchPanel(this);
+		dp = new DipositPanel(bs);
+		wp = new WithdrawPanel(bs);
+		tp = new TransferPanel(bs);
+		sp = new SearchPanel(bs);
 	}
 	
 	public void addPanel() {
@@ -46,11 +47,7 @@ public class UserRightPanel extends Panel{
 		this.add(tp, "이체");
 		this.add(sp, "조회");
 	}
-	
-	
-	public Panel getPanel() {
-		return this;
-	}
+
 
 	public void show(String cardName) {
 		card.show(this, cardName);

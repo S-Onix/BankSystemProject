@@ -3,12 +3,13 @@ package gui.userpanel.rightpanel;
 import java.awt.Color;
 import java.awt.Panel;
 
+import system.BankSystem;
+
 public class WithdrawPanel extends Panel{
-	Panel parent;
+	BankSystem bs;
 	
-	public WithdrawPanel(Panel parent) {
+	public WithdrawPanel(BankSystem bs) {
 		// TODO Auto-generated constructor stub
-		this.parent = parent;
 		this.setBackground(Color.RED);
 		this.setVisible(true);
 		

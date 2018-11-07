@@ -6,6 +6,7 @@ import java.awt.event.WindowEvent;
 
 import gui.userpanel.UserLeftPanel;
 import gui.userpanel.UserRightPanel;
+import system.BankSystem;
 
 public class UserMainFrame extends Frame {
 
@@ -15,11 +16,11 @@ public class UserMainFrame extends Frame {
 	Frame loginFrame;
 	boolean alive = false;
 
-	public UserMainFrame(Frame loginFrame) {
+	public UserMainFrame(Frame loginFrame, BankSystem bs) {
 		this.loginFrame = loginFrame;
 		this.setSize(600, 600);
 
-		rightPanel = new UserRightPanel(this);
+		rightPanel = new UserRightPanel(bs);
 		leftPanel = new UserLeftPanel(this, rightPanel);
 
 		initPanelSite();
@@ -41,8 +42,8 @@ public class UserMainFrame extends Frame {
 	}
 
 	public void initPanelSite() {
-		leftPanel.getPanel().setBounds(this.getX(), this.getY() + 24, this.getWidth() / 3 - 26, this.getHeight() - 26);
-		rightPanel.getPanel().setBounds(leftPanel.getWidth(), this.getY() + 26, (this.getWidth() / 3) * 2 - 26,
+		leftPanel.setBounds(this.getX(), this.getY() + 24, this.getWidth() / 3 - 26, this.getHeight() - 26);
+		rightPanel.setBounds(leftPanel.getWidth(), this.getY() + 26, (this.getWidth() / 3) * 2 - 26,
 				this.getHeight() - 26);
 	}
 	

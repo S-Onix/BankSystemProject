@@ -163,7 +163,7 @@ class BottomPanel extends Panel implements ActionListener {
 		if (e.getSource().equals(loginButton)) {
 			if (bs.login(idTf.getText(), pwTf.getText())) {
 				System.out.println("로그인 성공");
-				UserMainFrame umf = new UserMainFrame(parent);
+				UserMainFrame umf = new UserMainFrame(parent, bs);
 				parent.setEnabled(false);
 				
 
