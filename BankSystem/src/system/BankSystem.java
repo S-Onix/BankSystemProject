@@ -20,8 +20,6 @@ public class BankSystem implements Bank {
 	// has a 관계 : BankSystem 클래스는 Customer 객체를 가질 수 있다.
 	// scanner 부분은 전부 UI에서 데이터를 받아와야 함.
 
-	public Scanner scan;
-	public boolean run;
 	public ArrayList<BankCustomer> customers;
 	public int count = 0;
 	private Random random;
@@ -30,8 +28,6 @@ public class BankSystem implements Bank {
 	private BankCustomer loginCustomer;
 
 	public BankSystem() {
-		scan = new Scanner(System.in);
-		run = true;
 		customers = new ArrayList<>();
 		initCustomers();
 	}
@@ -149,18 +145,16 @@ public class BankSystem implements Bank {
 		loginCustomer.setBalance(loginCustomer.getBalance() - money);
 	}
 
-	public void bankTransfer() {
+	public void bankTransfer(String to, int money) {
 		System.out.println("어느 고객에게 이체하실 건가요?");
-		String id = scan.next();
-		BankCustomer customer = findCustomer(id);
+		BankCustomer customer = findCustomer(to);
 		System.out.println("얼마 이체하실 건가요?");
-		int transferMoney = scan.nextInt();
 
-		if (loginCustomer.getBalance() - transferMoney < 0) {
+		if (loginCustomer.getBalance() - money < 0) {
 			System.out.println("사용자의 금액보다 더 많은 금액을 이체할 수 없습니다");
 		} else {
-			customer.setBalance(customer.getBalance() + transferMoney);
-			loginCustomer.setBalance(loginCustomer.getBalance() - transferMoney);
+			customer.setBalance(customer.getBalance() + money);
+			loginCustomer.setBalance(loginCustomer.getBalance() - money);
 		}
 
 		System.out.println("현재 사용자의 잔고는 " + loginCustomer.getBalance() + "원 남았습니다");
@@ -184,12 +178,7 @@ public class BankSystem implements Bank {
 	 * 사용자의 정보를 입력하는 구간이다 (추후 UI에서 받아온 데이터를 통해 사용자 Customer의 정보 저장예정)
 	 */
 	private void inputInfo(BankCustomer customer) {
-		System.out.print("ID > ");
-		customer.setId(scan.next());
-		System.out.print("PASSWORD > ");
-		customer.setPw(scan.next());
-		System.out.print("이름 > ");
-		customer.setName(scan.next());
+		
 		customer.setAccount(createAccount());
 		System.out.println("사용자의 계좌번호는 " + customer.getAccount() + " 입니다.");
 
@@ -312,19 +301,19 @@ public class BankSystem implements Bank {
 	 * 현재 : console 출력 완성예정 : UI에 정보 입력 및 검사 예정
 	 */
 	public void printCustomer() {
-		System.out.print("어떤 고객을 찾으시나요(이름을 입력하세요) > ");
-		String findCustomer = scan.next();
-		System.out.println("-------------------------------------------");
-		System.out.println("이름\t아이디\t계좌번호\t\t\t잔고");
-		System.out.println("-------------------------------------------");
-
-		Iterator i = customers.iterator();
-		while (i.hasNext()) {
-			BankCustomer customer = (BankCustomer) i.next();
-			if (customer.getName().equals(findCustomer)) {
-				viewInfo(customer);
-			}
-		}
+//		System.out.print("어떤 고객을 찾으시나요(이름을 입력하세요) > ");
+//		String findCustomer = scan.next();
+//		System.out.println("-------------------------------------------");
+//		System.out.println("이름\t아이디\t계좌번호\t\t\t잔고");
+//		System.out.println("-------------------------------------------");
+//
+//		Iterator i = customers.iterator();
+//		while (i.hasNext()) {
+//			BankCustomer customer = (BankCustomer) i.next();
+//			if (customer.getName().equals(findCustomer)) {
+//				viewInfo(customer);
+//			}
+//		}
 
 	}
 
@@ -342,65 +331,65 @@ public class BankSystem implements Bank {
 
 
 
-	public void execute() {
-		int menuNum;
-
-		Iterator i = customers.iterator();
-		while (i.hasNext()) {
-			BankCustomer temp = (BankCustomer) i.next();
-			System.out.println(temp.getName() + " " + temp.getId() + " " + temp.getAccount() + " " + temp.getBalance());
-		}
-
-		do {
-			System.out.println("------------------------------------------------------");
-			System.out.println("1. 회원가입 | 2. 로그인  | 3. 고객정보 출력  |  4. 예금  | 5. 출금 | 6. 잔고  | 7. 이체 | 8. 전고객출력 | 9.종료");
-			System.out.println("------------------------------------------------------");
-			System.out.print("선택 > ");
-			menuNum = scan.nextInt();
-			switch (menuNum) {
-			case 1:
-				// signUp();
-				break;
-			case 2:
-				// login();
-				break;
-			case 3:
-				printCustomer();
-				break;
-			case 4:
-				// deposit();
-				break;
-			case 5:
-				// withdraw();
-				break;
-			case 6:
-				if (loginCustomer != null) {
-//					printBalance();
-				} else {
-					System.out.println("로그인 후 사용 가능합니다.");
-				}
-				break;
-			case 7:
-				if (loginCustomer != null) {
-					bankTransfer();
-				} else {
-					System.out.println("로그인 후 사용 가능합니다.");
-				}
-				break;
-			case 8:
-				printAllCustomer();
-			case 9:
-				setRun(false);
-				break;
-			default:
-				System.out.println("잘못된 입력입니다.(1~7)");
-			}
-		} while (run);
-
-	}
-
-	public void setRun(boolean run) {
-		this.run = run;
-	}
+//	public void execute() {
+//		int menuNum;
+//
+//		Iterator i = customers.iterator();
+//		while (i.hasNext()) {
+//			BankCustomer temp = (BankCustomer) i.next();
+//			System.out.println(temp.getName() + " " + temp.getId() + " " + temp.getAccount() + " " + temp.getBalance());
+//		}
+//
+//		do {
+//			System.out.println("------------------------------------------------------");
+//			System.out.println("1. 회원가입 | 2. 로그인  | 3. 고객정보 출력  |  4. 예금  | 5. 출금 | 6. 잔고  | 7. 이체 | 8. 전고객출력 | 9.종료");
+//			System.out.println("------------------------------------------------------");
+//			System.out.print("선택 > ");
+//			menuNum = scan.nextInt();
+//			switch (menuNum) {
+//			case 1:
+//				// signUp();
+//				break;
+//			case 2:
+//				// login();
+//				break;
+//			case 3:
+//				printCustomer();
+//				break;
+//			case 4:
+//				// deposit();
+//				break;
+//			case 5:
+//				// withdraw();
+//				break;
+//			case 6:
+//				if (loginCustomer != null) {
+////					printBalance();
+//				} else {
+//					System.out.println("로그인 후 사용 가능합니다.");
+//				}
+//				break;
+//			case 7:
+//				if (loginCustomer != null) {
+//					bankTransfer();
+//				} else {
+//					System.out.println("로그인 후 사용 가능합니다.");
+//				}
+//				break;
+//			case 8:
+//				printAllCustomer();
+//			case 9:
+//				setRun(false);
+//				break;
+//			default:
+//				System.out.println("잘못된 입력입니다.(1~7)");
+//			}
+//		} while (run);
+//
+//	}
+//
+//	public void setRun(boolean run) {
+//		this.run = run;
+//	}
 
 }
