@@ -44,8 +44,6 @@ public class InitFrame extends Frame{
 		});
 	}
 	
-	public static void main(String[] args) {
-		new InitFrame(new BankSystem());
-	}
+	
 	
 }

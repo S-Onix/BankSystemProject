@@ -14,7 +14,7 @@ import java.awt.event.WindowEvent;
 import gui.InitFrame;
 import gui.UserMainFrame;
 
-public class ExitDialog extends Dialog {
+public class ExitDialog extends Dialog{
 	Label la1, la2, la3, la4, la5;
 	Label msgLb;
 	Button exitButton, closeButton;

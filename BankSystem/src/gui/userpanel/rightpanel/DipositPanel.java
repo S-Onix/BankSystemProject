@@ -1,5 +1,6 @@
 package gui.userpanel.rightpanel;
 
+import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.event.ActionEvent;
@@ -87,7 +88,7 @@ public class DipositPanel extends JPanel implements ActionListener {
 		panel.setBounds(174, 52, 394, 322);
 
 		add(panel);
-
+		this.setBackground(Color.gray);
 		checkButton.addActionListener(this);
 		cancelButton.addActionListener(this);
 	}

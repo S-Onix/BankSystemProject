@@ -63,6 +63,7 @@ class TopPanel extends Canvas {
 		p = new Panel();
 
 		Toolkit tool = Toolkit.getDefaultToolkit();
+		//이미지 변경
 		img = tool.getImage("D:/yms/bank/BankSystemProject/BankSystem/img/bank.jpg");
 		p.setLayout(new BorderLayout());
 		p.add(this, "Center");

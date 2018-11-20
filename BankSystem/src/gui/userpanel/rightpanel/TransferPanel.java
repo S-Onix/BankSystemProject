@@ -1,84 +1,202 @@
 package gui.userpanel.rightpanel;
 
-import javax.swing.JPanel;
-
-import system.BankSystem;
-import javax.swing.JLabel;
-import javax.swing.JButton;
-import javax.swing.JTextField;
+import java.awt.Color;
 import java.awt.Font;
+import java.awt.Panel;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JPasswordField;
+import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
-public class TransferPanel extends JPanel {
-	private JTextField textField;
-	private JTextField textField_1;
-	private JTextField textField_2;
-	private JTextField textField_3;
+import system.BankSystem;
 
-	/**
-	 * Create the panel.
-	 */
+public class TransferPanel extends Panel implements ActionListener {
+	BankSystem bs;
+	JLabel userInfoLb, timeInfoLb;
+	JLabel accountLb, moneyLb, pwLb;
+	JLabel hyponLb[];
+
+	JTextField accountTf[];
+	JTextField moneyTf;
+	JPasswordField pwTf;
+
+	JButton checkButton;
+	JButton cancelButton;
+
 	public TransferPanel(BankSystem bs) {
-		setLayout(null);
-		
-		JButton btnNewButton = new JButton("New button");
-		btnNewButton.setFont(new Font("휴먼모음T", Font.BOLD, 17));
-		btnNewButton.setBounds(246, 488, 97, 23);
-		add(btnNewButton);
-		
-		JLabel lblNewLabel = new JLabel("New label");
-		lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		lblNewLabel.setFont(new Font("휴먼모음T", Font.PLAIN, 16));
-		lblNewLabel.setBounds(218, 23, 370, 15);
-		add(lblNewLabel);
-		
-		JLabel lblNewLabel_1 = new JLabel("New label");
-		lblNewLabel_1.setFont(new Font("휴먼모음T", Font.BOLD, 16));
-		lblNewLabel_1.setBounds(218, 159, 125, 15);
-		add(lblNewLabel_1);
-		
-		textField = new JTextField();
-		textField.setBounds(218, 208, 68, 21);
-		add(textField);
-		textField.setColumns(10);
-		
-		JLabel label = new JLabel("-");
-		label.setBounds(298, 211, 14, 15);
-		add(label);
-		
-		textField_1 = new JTextField();
-		textField_1.setBounds(315, 208, 107, 21);
-		add(textField_1);
-		textField_1.setColumns(10);
-		
-		JLabel label_1 = new JLabel("-");
-		label_1.setBounds(429, 211, 14, 15);
-		add(label_1);
-		
-		textField_2 = new JTextField();
-		textField_2.setBounds(444, 208, 116, 21);
-		add(textField_2);
-		textField_2.setColumns(10);
-		
-		textField_3 = new JTextField();
-		textField_3.setBounds(218, 374, 116, 21);
-		add(textField_3);
-		textField_3.setColumns(10);
-		
-		JLabel lblCurrentTime = new JLabel("current time");
-		lblCurrentTime.setFont(new Font("휴먼모음T", Font.BOLD, 14));
-		lblCurrentTime.setBounds(218, 426, 291, 15);
-		add(lblCurrentTime);
-		
-		JLabel label_2 = new JLabel("New label");
-		label_2.setFont(new Font("휴먼모음T", Font.BOLD, 16));
-		label_2.setBounds(218, 335, 125, 15);
-		add(label_2);
-		
-		JButton button = new JButton("New button");
-		button.setFont(new Font("휴먼모음T", Font.BOLD, 17));
-		button.setBounds(412, 488, 97, 23);
-		add(button);
+		this.bs = bs;
+		this.setLayout(null);
+		this.setBackground(Color.gray);
+
+		initComoponent();
+		initComponentSite();
+		addComponent();
+		setListener();
 
 	}
+
+	public void initComoponent() {
+		userInfoLb = new JLabel(bs.getLoginCustomer().getName() + "님 환영합니다");
+		accountLb = new JLabel("계좌번호");
+		pwLb = new JLabel("비밀번호");
+		timeInfoLb = new JLabel("현재시간 출력");
+		hyponLb = new JLabel[2];
+		for (int i = 0; i < hyponLb.length; i++) {
+			hyponLb[i] = new JLabel("-");
+		}
+
+		accountTf = new JTextField[3];
+		for (int i = 0; i < accountTf.length; i++) {
+			accountTf[i] = new JTextField();
+		}
+
+		moneyLb = new JLabel("금액 입력 : ");
+		moneyTf = new JTextField();
+
+		pwTf = new JPasswordField();
+
+		checkButton = new JButton("계좌이체");
+		cancelButton = new JButton("취소");
+	}
+
+	
+
+	public void initComponentSite() {
+		// 회원정보
+		userInfoLb.setHorizontalAlignment(SwingConstants.CENTER);
+		userInfoLb.setFont(new Font("휴먼모음T", Font.PLAIN, 16));
+		userInfoLb.setBounds(218, 23, 370, 20);
+
+		// 계좌 관련
+		accountLb.setFont(new Font("휴먼모음T", Font.BOLD, 16));
+		accountLb.setBounds(218, 129, 125, 20);
+
+		accountTf[0].setBounds(218, 178, 68, 21);
+		accountTf[0].setColumns(10);
+
+		hyponLb[0].setBounds(298, 181, 14, 15);
+
+		accountTf[1].setBounds(315, 178, 107, 21);
+		accountTf[1].setColumns(10);
+
+		hyponLb[1].setBounds(429, 181, 14, 15);
+
+		accountTf[2].setBounds(444, 178, 116, 21);
+		accountTf[2].setColumns(10);
+
+		// 금액 관련
+		moneyLb.setBounds(218, 225, 100, 30);
+		moneyLb.setFont(new Font("휴먼모음T", Font.BOLD, 16));
+
+		moneyTf.setBounds(325, 225, 100, 21);
+		moneyTf.setColumns(10);
+
+		// 비밀번호 관련
+		pwLb.setBounds(215, 330, 125, 15);
+		pwLb.setFont(new Font("휴먼모음T", Font.BOLD, 16));
+
+		pwTf.setBounds(218, 374, 116, 21);
+		pwTf.setColumns(10);
+
+		// 시간 정보 관련
+		timeInfoLb.setFont(new Font("휴먼모음T", Font.BOLD, 14));
+		timeInfoLb.setBounds(218, 426, 291, 15);
+
+		// 버튼 관련
+		checkButton.setFont(new Font("휴먼모음T", Font.BOLD, 17));
+		checkButton.setBounds(246, 471, 97, 40);
+
+		cancelButton.setFont(new Font("휴먼모음T", Font.BOLD, 17));
+		cancelButton.setBounds(412, 471, 97, 40);
+	}
+	
+	public void setListener() {
+		checkButton.addActionListener(this);
+		cancelButton.addActionListener(this);
+	}
+	
+	public void setKeyEvent() {
+		accountTf[0].addKeyListener(new KeyAdapter() {
+			public void keyTyped(KeyEvent ke) {
+				char c= ke.getKeyChar();
+				if(!Character.isDigit(c))
+					ke.consume();
+			}
+		});
+	}
+
+	public void addComponent() {
+		this.add(userInfoLb);
+		this.add(timeInfoLb);
+		this.add(accountLb);
+		this.add(pwLb);
+		this.add(hyponLb[0]);
+		this.add(hyponLb[1]);
+		this.add(accountTf[0]);
+		this.add(accountTf[1]);
+		this.add(accountTf[2]);
+		this.add(moneyLb);
+		this.add(moneyTf);
+		this.add(pwTf);
+		this.add(checkButton);
+		this.add(cancelButton);
+	}
+
+	public void initTextField() {
+		for (int i = 0; i < accountTf.length; i++) {
+			accountTf[i].setText("");
+		}
+		moneyTf.setText("");
+		;
+		pwTf.setText("");
+	}
+
+
+
+	public boolean isEmpty() {
+		if (accountTf[0].getText().equals("") && accountTf[1].getText().equals("") && accountTf[2].getText().equals("")
+				&& moneyTf.getText().equals("") && pwTf.getText().equals(""))
+			return true;
+		else
+			return false;
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		// TODO Auto-generated method stub
+		JButton button = (JButton) e.getSource();
+
+		String account = "";
+		int money = 0;
+
+
+		/*
+		 * TODO : TextField 숫자 제한 및 다이얼로그 출력
+		 */
+		switch (button.getText()) {
+		case "계좌이체":
+			if (!isEmpty()) {
+				account = accountTf[0].getText() + "-" + accountTf[1].getText() + "-" + accountTf[2].getText();
+				money = Integer.parseInt(moneyTf.getText());
+				if (bs.transMoney(account, money) && bs.getLoginCustomer().getPw().equals(pwTf.getText())) {
+					System.out.println("trans money success");
+				} else {
+					System.out.println("trans money fail");
+				}
+			}
+			
+			break;
+		case "취소":
+			initTextField();
+			break;
+		}
+
+	}
+
 }

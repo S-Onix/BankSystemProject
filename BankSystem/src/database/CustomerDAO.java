@@ -61,6 +61,40 @@ public class CustomerDAO {
 		return data;
 	}
 
+	/*
+	 * TODO : 왜 사용할것인지 생각해보기
+	 * */
+	public String getCustomerByAccount(String account) {
+		String sql = "SELECT USER_ID FROM CUSTOMER WHERE USER_ACCOUNT = '" + account + "';";
+		
+		String userId = "";
+		
+		conn = null;
+		stmt = null;
+		rs = null;
+
+		try {
+			conn = bankDB.getConnect();
+			stmt = conn.createStatement();
+			rs = stmt.executeQuery(sql);
+			while(rs.next()) {
+				ResultSetMetaData rsmd = null;
+				int columCount = rsmd.getColumnCount();
+				for(int i = 1; i <= columCount ; i++) {
+					
+				}
+			}
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			bankDB.destroy(rs, stmt, conn);
+		}
+		
+		return userId;
+	}
+
 	public void insertCustomer(String id, String pw, String name, String email, String phone, String account) {
 		String sql = "INSERT INTO CUSTOMER VALUES('" + id + "','" + pw + "','" + name + "','" + email + "','" + phone
 				+ "','" + account + "'," + 0 + ",'" + "normal'" + ");";
@@ -77,15 +111,7 @@ public class CustomerDAO {
 			e.printStackTrace();
 		} finally {
 
-			try {
-				if (stmt != null)
-					stmt.close();
-				if (conn != null)
-					conn.close();
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			bankDB.destroy(stmt, conn);
 
 		}
 	}
@@ -104,15 +130,7 @@ public class CustomerDAO {
 			System.out.println("Query is not working");
 			e.printStackTrace();
 		} finally {
-			try {
-				if (stmt != null)
-					stmt.close();
-				if (conn != null)
-					conn.close();
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			bankDB.destroy(stmt, conn);
 		}
 	}
 
@@ -131,15 +149,7 @@ public class CustomerDAO {
 			System.out.println("Query is not working");
 			e.printStackTrace();
 		} finally {
-			try {
-				if (stmt != null)
-					stmt.close();
-				if (conn != null)
-					conn.close();
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			bankDB.destroy(stmt, conn);
 		}
 	}
 

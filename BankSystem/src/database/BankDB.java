@@ -17,14 +17,16 @@ public class BankDB {
 
 	private static final String DRIVER = "com.mysql.jdbc.Driver";
 	// 데이터 삽입 과정에서 한글 인코딩이 안되서 추가함
-	private static final String URL = "jdbc:mysql://192.168.0.21:3306/bank_system?useUnicode=true&characterEncoding=utf8&autoReconnect=true&validationQuery=select 1";
-	private static final String USER = "root";
-	private static final String PASSWORD = "root";
+//	private static final String URL = "jdbc:mysql://192.168.0.21:3306/app_user6?useUnicode=true&characterEncoding=utf8&autoReconnect=true&validationQuery=select 1";
+	private static final String URL = "jdbc:mysql://192.168.0.21:3306/app_user6";
+	private static final String USER = "user6";
+	private static final String PASSWORD = "oracle";
 
 	private BankDB() {
 		try {
+			System.out.println("Driver connect before");
 			Class.forName(DRIVER);
-			System.out.println("connection successful");
+			System.out.println("Driver connect successful");
 		} catch (ClassNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -43,9 +45,9 @@ public class BankDB {
 		conn = null;
 		try {
 			if (conn == null) {
-				System.out.println("Driver connect before");
+				System.out.println("Database connect before");
 				conn = DriverManager.getConnection(URL, USER, PASSWORD);
-				System.out.println("Driver connect success");
+				System.out.println("Database connect success");
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block

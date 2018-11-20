@@ -25,10 +25,11 @@ public class UserLeftPanel extends Panel implements ActionListener {
 		this.loginFrame = loginFrame;
 		this.rightPanel = rightPanel;
 		this.setLayout(new GridLayout(0, 1, 0, 10));
+		
 		initComponent();
 		addComponent();
 		addButtonAction();
-		this.setBackground(Color.blue);
+
 		this.setVisible(true);
 	}
 

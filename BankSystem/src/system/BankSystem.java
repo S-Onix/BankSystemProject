@@ -52,6 +52,12 @@ public class BankSystem implements Bank {
 	public void updateCustomer() {
 		cdao.updateCustomerDB(loginCustomer.getId(), loginCustomer.getBalance());
 	}
+	
+	public boolean isUpdate(int money) {
+		if(loginCustomer.getBalance() - money < 0)
+			return false;
+		else return true;
+	}
 
 	/*
 	 * 회원가입 (ArrayList 객체 추가 + Customer DB에 데이터 추가)
@@ -122,17 +128,18 @@ public class BankSystem implements Bank {
 	}
 
 	/*
-	 * 이체기능 : id를 통해 전달
+	 * 이체기능 : account를 통해 전달
 	 */
-	public void transMoney(String id, int money) {
+	public boolean transMoney(String account, int money) {
 		if (loginCustomer.getBalance() - money < 0) {
-			return;
+			return false;
 		} else {
 			loginCustomer.setBalance(loginCustomer.getBalance() - money);
-			BankCustomer destCustomer = findCustomer(id);
+			BankCustomer destCustomer = findCustomerByAccount(account);
 			destCustomer.setBalance(destCustomer.getBalance() + money);
 			cdao.updateCustomerDB(loginCustomer.getId(), loginCustomer.getBalance());
 			cdao.updateCustomerDB(destCustomer.getId(), destCustomer.getBalance());
+			return true;
 		}
 
 	}
@@ -232,21 +239,6 @@ public class BankSystem implements Bank {
 		return result;
 	}
 
-	/**
-	 * 현재 : console에서 출력 완성예정 : UI에서 출력 사용자의 정보 출력
-	 */
-	public void viewInfo(BankCustomer customer) {
-		System.out.println(customer.getName() + "\t" + customer.getId() + "\t" + customer.getAccount() + "\t\t"
-				+ customer.getBalance());
-
-	}
-
-	public void printAllCustomer() {
-		Iterator<BankCustomer> i = customers.iterator();
-		while (i.hasNext()) {
-			viewInfo(i.next());
-		}
-	}
 
 	// 고객정보 출력
 	/**
@@ -255,9 +247,9 @@ public class BankSystem implements Bank {
 	public void printCustomer() {
 
 	}
-
-	public BankCustomer findCustomer(String id) {
-
+	
+	
+	public BankCustomer findCustomerById(String id) {
 		BankCustomer customer = null;
 		for (int i = 0; i < customers.size(); i++) {
 			if (customers.get(i).getId().equals(id)) {
@@ -267,6 +259,20 @@ public class BankSystem implements Bank {
 		}
 		return customer;
 	}
+
+	public BankCustomer findCustomerByAccount(String account) {
+
+		BankCustomer customer = null;
+		for (int i = 0; i < customers.size(); i++) {
+			if (customers.get(i).getAccount().equals(account)) {
+				customer = customers.get(i);
+				break;
+			}
+		}
+		return customer;
+	}
+	
+	
 
 	// 현재 시간 정보 String으로 출력 고객화면에서 사용 예정
 	public String getCurrentDate() {

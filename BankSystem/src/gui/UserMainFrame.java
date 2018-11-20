@@ -19,7 +19,7 @@ public class UserMainFrame extends Frame {
 		this.loginFrame = loginFrame;
 		this.setSize(600, 600);
 
-		rightPanel = new UserRightPanel(bs);
+		rightPanel = new UserRightPanel(bs, this);
 		leftPanel = new UserLeftPanel(this, rightPanel, loginFrame);
 
 		initPanelSite();

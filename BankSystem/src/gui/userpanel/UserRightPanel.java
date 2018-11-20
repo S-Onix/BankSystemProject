@@ -5,6 +5,7 @@ import java.awt.Color;
 import java.awt.Frame;
 import java.awt.Panel;
 
+import gui.UserMainFrame;
 import gui.userpanel.rightpanel.DipositPanel;
 import gui.userpanel.rightpanel.SearchPanel;
 import gui.userpanel.rightpanel.TransferPanel;
@@ -19,10 +20,11 @@ public class UserRightPanel extends Panel{
 	SearchPanel sp;
 	private CardLayout card;
 	BankSystem bs;
+	UserMainFrame umf;
 
-	public UserRightPanel(BankSystem bs) {
-		this.setBackground(Color.BLACK);
+	public UserRightPanel(BankSystem bs, UserMainFrame umf) {
 		this.bs = bs;
+		this.umf = umf;
 		
 		card = new CardLayout();
 		this.setLayout(card);
@@ -36,7 +38,7 @@ public class UserRightPanel extends Panel{
 	
 	public void initRightPanel() {
 		dp = new DipositPanel(bs);
-		wp = new WithdrawPanel(bs);
+		wp = new WithdrawPanel(bs, umf);
 		tp = new TransferPanel(bs);
 		sp = new SearchPanel(bs);
 	}

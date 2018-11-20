@@ -1,23 +1,30 @@
 package gui.userpanel.rightpanel;
 
-import java.awt.EventQueue;
+import java.awt.Button;
+import java.awt.Color;
+import java.awt.Dialog;
 import java.awt.Font;
+import java.awt.Frame;
 import java.awt.Graphics;
+import java.awt.Label;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 
+import gui.UserMainFrame;
 import system.BankSystem;
 
-public class WithdrawPanel extends JPanel implements ActionListener{
+public class WithdrawPanel extends JPanel implements ActionListener {
 
 	private JTextField textField;
 	private JPanel panel;
@@ -27,10 +34,13 @@ public class WithdrawPanel extends JPanel implements ActionListener{
 	JButton checkButton;
 	JButton cancelButton;
 	BankSystem bs;
+	Dialog msgDialog;
+	UserMainFrame umf;
 
-	public WithdrawPanel(BankSystem bs) {
+	public WithdrawPanel(BankSystem bs, UserMainFrame parent) {
 		this.setLayout(null);
 		this.bs = bs;
+		parent = umf;
 
 		textField = new JTextField();
 		textField.setBounds(243, 425, 159, 21);
@@ -55,6 +65,7 @@ public class WithdrawPanel extends JPanel implements ActionListener{
 
 		userInfo = new JLabel(bs.getLoginCustomer().getName() + "님 환영합니다");
 		userInfo.setFont(new Font("휴먼모음T", Font.BOLD, 16));
+		userInfo.setHorizontalAlignment(SwingConstants.CENTER);
 		userInfo.setBounds(243, 27, 248, 20);
 		add(userInfo);
 
@@ -88,7 +99,8 @@ public class WithdrawPanel extends JPanel implements ActionListener{
 		panel.setBounds(174, 52, 394, 322);
 
 		add(panel);
-
+		initMsgDialog();
+		this.setBackground(Color.gray);
 		checkButton.addActionListener(this);
 		cancelButton.addActionListener(this);
 	}
@@ -104,11 +116,14 @@ public class WithdrawPanel extends JPanel implements ActionListener{
 			checkButton.setEnabled(true);
 			String s = textField.getText();
 			int money = Integer.parseInt(s);
-			bs.withdraw(money);
-			bs.updateCustomer();
+			if (bs.isUpdate(money)) {
+				bs.withdraw(money);
+				bs.updateCustomer();
+			}else {
+				msgDialog.setVisible(true);
+			}
 
 			System.out.println("이후 고객의 잔고 : " + bs.getCustomerBalance());
-			// 다이얼로그 작성
 			break;
 		case "취소":
 			// dialog
@@ -117,6 +132,40 @@ public class WithdrawPanel extends JPanel implements ActionListener{
 
 		}
 	}
+	
+	public void initMsgDialog() {
+		msgDialog = new Dialog(umf);
+		Label msg = new Label("잔고에 있는 금액보다 많이 출금할 수 없습니다.");
+		Button yesButton = new Button("확인");
 
+		msgDialog.setLayout(null);
+		msgDialog.setTitle("고객님 통장의 잔고를 확인해주세요!");
+		
+		msg.setBounds(25, 40, 250, 30);
+		yesButton.setBounds(130, 75, 50, 30);
+		
+		msgDialog.add(msg);
+		msgDialog.add(yesButton);
+
+		yesButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				msgDialog.dispose();
+			}
+		});
+		
+
+		msgDialog.setBounds(0, 0, 300, 120);
+		msgDialog.setResizable(false);
+		msgDialog.setModal(true);
+		msgDialog.addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosing(WindowEvent e) {
+				msgDialog.dispose();
+			}
+		});
+
+	}
 
 }
