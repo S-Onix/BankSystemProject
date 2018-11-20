@@ -1,6 +1,7 @@
 package dialog;
 
 import java.awt.Button;
+import java.awt.Container;
 import java.awt.Dialog;
 import java.awt.Frame;
 import java.awt.GridLayout;
@@ -17,8 +18,9 @@ public class MessageDialog extends Dialog{
 	public String msg = "아이디 or 비밀번호를 잘못 입력하셨습니다!";
 	Button checkButton;
 	
-	public MessageDialog(Frame parent) {
-		super(parent, "메세지 다이얼로그");
+//	public MessageDialog(Frame parent) {
+	public MessageDialog(Container parent) {
+		super((Frame) parent, "메세지 다이얼로그");
 		p1 = new Panel();
 		p2 = new Panel();
 		la1 = new Label();

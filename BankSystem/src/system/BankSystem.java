@@ -19,6 +19,10 @@ public class BankSystem implements Bank {
 	StringBuffer sb;
 	CustomerDAO cdao;
 	TransDAO tdao;
+	
+	String transType[] = {
+			"입금", "출금", "계좌이체"
+	};
 
 	private BankCustomer loginCustomer;
 
@@ -53,10 +57,23 @@ public class BankSystem implements Bank {
 		cdao.updateCustomerDB(loginCustomer.getId(), loginCustomer.getBalance());
 	}
 	
+	
+	
 	public boolean isUpdate(int money) {
 		if(loginCustomer.getBalance() - money < 0)
 			return false;
 		else return true;
+	}
+	
+	/*
+	 * 거래 이력 업데이트
+	 * */
+	public void updateTransLog(int money, int flag) {
+		tdao.insertTransLog(loginCustomer,transType[flag],money);
+	}
+	
+	public void updateTransLog(int money, int flag, String account) {
+		tdao.insertTransLog(loginCustomer, transType[flag], money, account);
 	}
 
 	/*

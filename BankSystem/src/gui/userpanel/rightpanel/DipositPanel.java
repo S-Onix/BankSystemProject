@@ -15,6 +15,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
+import dialog.MessageDialog;
 import system.BankSystem;
 
 public class DipositPanel extends JPanel implements ActionListener {
@@ -26,10 +27,13 @@ public class DipositPanel extends JPanel implements ActionListener {
 	JButton checkButton;
 	JButton cancelButton;
 	BankSystem bs;
+	MessageDialog mDialog;
 
 	public DipositPanel(BankSystem bs) {
 		this.setLayout(null);
 		this.bs = bs;
+		
+		mDialog = new MessageDialog(this.getParent());
 
 		textField = new JTextField();
 		textField.setBounds(243, 425, 159, 21);
@@ -106,12 +110,14 @@ public class DipositPanel extends JPanel implements ActionListener {
 			int money = Integer.parseInt(s);
 			bs.deposit(money);
 			bs.updateCustomer();
-
+			bs.updateTransLog(money, 0);
+			mDialog.getLabel().setText(money+"원 입금하셨습니다.");
+			mDialog.setVisible(true);
+			textField.setText("");
 			System.out.println("이후 고객의 잔고 : " + bs.getCustomerBalance());
 			// 다이얼로그 작성
 			break;
 		case "취소":
-			// dialog
 			textField.setText("");
 			break;
 

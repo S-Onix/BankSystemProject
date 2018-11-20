@@ -7,6 +7,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -14,6 +15,7 @@ import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
+import dialog.MessageDialog;
 import system.BankSystem;
 
 public class TransferPanel extends Panel implements ActionListener {
@@ -28,16 +30,20 @@ public class TransferPanel extends Panel implements ActionListener {
 
 	JButton checkButton;
 	JButton cancelButton;
+	MessageDialog mDialog;
 
 	public TransferPanel(BankSystem bs) {
 		this.bs = bs;
 		this.setLayout(null);
 		this.setBackground(Color.gray);
+		
+		mDialog = new MessageDialog(this.getParent());
 
 		initComoponent();
 		initComponentSite();
 		addComponent();
 		setListener();
+		setKeyEvent();
 
 	}
 
@@ -62,6 +68,7 @@ public class TransferPanel extends Panel implements ActionListener {
 		pwTf = new JPasswordField();
 
 		checkButton = new JButton("계좌이체");
+		checkButton.setEnabled(false);
 		cancelButton = new JButton("취소");
 	}
 
@@ -122,11 +129,46 @@ public class TransferPanel extends Panel implements ActionListener {
 	}
 	
 	public void setKeyEvent() {
+		
 		accountTf[0].addKeyListener(new KeyAdapter() {
 			public void keyTyped(KeyEvent ke) {
 				char c= ke.getKeyChar();
-				if(!Character.isDigit(c))
+				JTextField temp = (JTextField) ke.getSource();
+				if(!Character.isDigit(c) || temp.getText().length() >=4)
 					ke.consume();
+			}
+		});
+		accountTf[1].addKeyListener(new KeyAdapter() {
+			public void keyTyped(KeyEvent ke) {
+				char c= ke.getKeyChar();
+				JTextField temp = (JTextField) ke.getSource();
+				if(!Character.isDigit(c) | temp.getText().length() >=6)
+					ke.consume();
+			}
+		});
+		accountTf[2].addKeyListener(new KeyAdapter() {
+			public void keyTyped(KeyEvent ke) {
+				char c= ke.getKeyChar();
+				JTextField temp = (JTextField) ke.getSource();
+				if(!Character.isDigit(c) | temp.getText().length() >=6)
+					ke.consume();
+			}
+		});
+		
+		moneyTf.addKeyListener(new KeyAdapter() {
+			public void keyTyped(KeyEvent ke) {
+				char c= ke.getKeyChar();
+				JTextField temp = (JTextField) ke.getSource();
+				if(!Character.isDigit(c) | temp.getText().length() >=10)
+					ke.consume();
+			}
+		});
+
+		pwTf.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				// TODO Auto-generated method stub
+				checkButton.setEnabled(true);
 			}
 		});
 	}
@@ -153,7 +195,6 @@ public class TransferPanel extends Panel implements ActionListener {
 			accountTf[i].setText("");
 		}
 		moneyTf.setText("");
-		;
 		pwTf.setText("");
 	}
 
@@ -184,13 +225,23 @@ public class TransferPanel extends Panel implements ActionListener {
 			if (!isEmpty()) {
 				account = accountTf[0].getText() + "-" + accountTf[1].getText() + "-" + accountTf[2].getText();
 				money = Integer.parseInt(moneyTf.getText());
-				if (bs.transMoney(account, money) && bs.getLoginCustomer().getPw().equals(pwTf.getText())) {
+				if (bs.transMoney(account, money) && bs.getLoginCustomer().getPw().equals(pwTf.getText()) && money > 0) {
+					mDialog.getLabel().setText("계좌이체 성공하셨습니다.");
+					mDialog.setVisible(true);
+					bs.updateTransLog(money, 2, account);
 					System.out.println("trans money success");
-				} else {
-					System.out.println("trans money fail");
+				}else if(!bs.isUpdate(money)){
+					mDialog.getLabel().setText("잔고를 확인해주세요");
+					mDialog.setVisible(true);
+					System.out.println("trans money fail by account balance");
+				}
+				else {
+					mDialog.getLabel().setText("계좌번호 or 비밀번호를 확인해주세요");
+					mDialog.setVisible(true);
+					
+					System.out.println("trans money fail by pw or account");
 				}
 			}
-			
 			break;
 		case "취소":
 			initTextField();
