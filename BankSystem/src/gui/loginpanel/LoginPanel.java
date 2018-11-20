@@ -23,6 +23,7 @@ import javax.swing.JPasswordField;
 import dialog.ExitDialog;
 import dialog.LoginErrorDialog;
 import dialog.SignInDialog;
+import gui.ManagerMainFrame;
 import gui.UserMainFrame;
 import system.BankSystem;
 
@@ -165,9 +166,13 @@ class BottomPanel extends Panel implements ActionListener {
 				System.out.println("로그인 성공");
 				UserMainFrame umf = new UserMainFrame(parent, bs);
 				parent.setEnabled(false);
-				
 
-			} else {
+			}else if(idTf.getText().equals("admin") && pwTf.getText().equals("admin")) {
+				System.out.println("관리자페이지");
+				ManagerMainFrame mmf = new ManagerMainFrame(parent, bs);
+				parent.setEnabled(false);
+			}
+			else {
 				led.getLabel().setText(led.msg);
 				led.setVisible(true);
 			}

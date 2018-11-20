@@ -49,28 +49,28 @@ public class WithdrawPanel extends JPanel implements ActionListener{
 		});
 
 		JLabel lblNewLabel = new JLabel("Ãâ±Ý¾×");
-		lblNewLabel.setFont(new Font("³ª´®°íµñ", Font.BOLD, 15));
-		lblNewLabel.setBounds(245, 397, 92, 15);
+		lblNewLabel.setFont(new Font("ÈÞ¸Õ¸ðÀ½T", Font.BOLD, 16));
+		lblNewLabel.setBounds(245, 397, 92, 20);
 		add(lblNewLabel);
 
-		userInfo = new JLabel("È¯¿µÇÕ´Ï´Ù");
-		userInfo.setFont(new Font("³ª´®°íµñ", Font.BOLD, 15));
-		userInfo.setBounds(243, 27, 248, 15);
+		userInfo = new JLabel(bs.getLoginCustomer().getName() + "´Ô È¯¿µÇÕ´Ï´Ù");
+		userInfo.setFont(new Font("ÈÞ¸Õ¸ðÀ½T", Font.BOLD, 16));
+		userInfo.setBounds(243, 27, 248, 20);
 		add(userInfo);
 
 		timeInfo = new JLabel("½Ã°£ Ãâ·Â");
-		timeInfo.setFont(new Font("³ª´®°íµñ", Font.BOLD, 15));
+		timeInfo.setFont(new Font("ÈÞ¸Õ¸ðÀ½T", Font.BOLD, 16));
 		timeInfo.setBounds(245, 463, 229, 26);
 		add(timeInfo);
 
 		checkButton = new JButton("È®ÀÎ");
-		checkButton.setFont(new Font("±¼¸²", Font.BOLD, 13));
-		checkButton.setBounds(243, 506, 107, 43);
+		checkButton.setFont(new Font("ÈÞ¸Õ¸ðÀ½T", Font.BOLD, 16));
+		checkButton.setBounds(243, 506, 107, 44);
 		checkButton.setEnabled(false);
 		add(checkButton);
 
 		cancelButton = new JButton("Ãë¼Ò");
-		cancelButton.setFont(new Font("±¼¸²", Font.BOLD, 13));
+		cancelButton.setFont(new Font("ÈÞ¸Õ¸ðÀ½T", Font.BOLD, 16));
 		cancelButton.setBounds(433, 505, 107, 44);
 		add(cancelButton);
 
@@ -104,7 +104,7 @@ public class WithdrawPanel extends JPanel implements ActionListener{
 			checkButton.setEnabled(true);
 			String s = textField.getText();
 			int money = Integer.parseInt(s);
-			bs.deposit(money);
+			bs.withdraw(money);
 			bs.updateCustomer();
 
 			System.out.println("ÀÌÈÄ °í°´ÀÇ ÀÜ°í : " + bs.getCustomerBalance());

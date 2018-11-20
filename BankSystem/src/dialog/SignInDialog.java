@@ -4,6 +4,7 @@ import java.awt.Button;
 import java.awt.Checkbox;
 import java.awt.CheckboxGroup;
 import java.awt.Choice;
+import java.awt.Color;
 import java.awt.Dialog;
 import java.awt.Frame;
 import java.awt.Label;
@@ -28,9 +29,9 @@ public class SignInDialog extends Dialog {
 	private boolean isDistinct = false;
 	private boolean checkPassword = false;
 	private boolean isClose = false;
-
-	String megStr2 = "중복된 아이디가 아닙니다.";
-	String megStr1 = "중복된 아이디가 맞습니다.";
+	
+	String megStr1 = "다른 아이디를 작성해주세요.";
+	String megStr2 = "해당 아이디를 사용하셔도 됩니다.";
 
 	BankSystem bs;
 
@@ -99,21 +100,20 @@ public class SignInDialog extends Dialog {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				// TODO Auto-generated method stub
-				// 중복발생 로직 및 dialog 출력
-				if (isDistinct()) {
+
+				if (bs.isIdDistinct(idTf.getText())) {
 					distinctMsg.setText(megStr1);
-					isDistinct = false;
+					idTf.setText("");
+					setDistinct(true);;
 					distinctD.setVisible(true);
 				} else {
 					distinctMsg.setText(megStr2);
-					isDistinct = true;
+					setDistinct(false);
 					distinctD.setVisible(true);
 				}
 			}
 		});
 
-		// 패스워드 추가해야 할 사항 : 별모양으로 출력
 		pwLb = new Label("PASSWORD");
 		pwLb.setBounds(20, 130, 80, 25);
 		this.add(pwLb);
@@ -138,9 +138,11 @@ public class SignInDialog extends Dialog {
 			public void keyReleased(KeyEvent ke) {
 				if (pwTf.getText().equals(rePwTf.getText())) {
 					pwReLb.setText("일치");
-					setCheckPassword(true);
+					pwReLb.setBackground(Color.GREEN);
+					setCheckPassword(true);;
 				} else {
 					pwReLb.setText("불일치");
+					pwReLb.setBackground(Color.red);
 					setCheckPassword(false);
 				}
 			}
@@ -385,7 +387,7 @@ public class SignInDialog extends Dialog {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
-				if ((!isDistinct() && isCheckPassword())) {
+				if ((!isDistinct && isCheckPassword())) {
 					saveCustomer();
 					initField();
 					dispose();
@@ -425,7 +427,7 @@ public class SignInDialog extends Dialog {
 		distinctD.setTitle("중복 아이디 체크");
 		distinctD.setLayout(null);
 
-		distinctMsg.setBounds(90, 40, 160, 30);
+		distinctMsg.setBounds(70, 40, 200, 30);
 		yes.setBounds(135, 75, 50, 30);
 
 		distinctD.add(distinctMsg);
@@ -471,19 +473,6 @@ public class SignInDialog extends Dialog {
 		phoneTf1.setText("");
 		phoneTf2.setText("");
 		emailTf.setText("");
-	}
-
-	public boolean isDistinct() {
-		Iterator i = bs.getCustomers().iterator();
-		while (i.hasNext()) {
-			BankCustomer temp = (BankCustomer) i.next();
-			if (temp.getId().equals(idTf.getText())) {
-				setDistinct(true);
-				return true;
-			}
-		}
-		setDistinct(false);
-		return false;
 	}
 
 	public void saveCustomer() {

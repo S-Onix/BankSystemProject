@@ -10,12 +10,13 @@ import gui.loginpanel.LoginPanel;
 import system.BankSystem;
 
 public class InitFrame extends Frame{
-	BankSystem bs = new BankSystem();
+	BankSystem bs;
 	Label la[] = new Label[4];
 	LoginPanel ip;
 	String direction[] = {"North", "East", "West", "South"};
 	
-	public InitFrame() {
+	public InitFrame(BankSystem bs) {
+		this.bs = bs;
 		ip = new LoginPanel(this, bs);
 		
 		this.setTitle("은행 업무 시스템");
@@ -44,7 +45,7 @@ public class InitFrame extends Frame{
 	}
 	
 	public static void main(String[] args) {
-		new InitFrame();
+		new InitFrame(new BankSystem());
 	}
 	
 }

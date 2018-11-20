@@ -19,7 +19,7 @@ public class UserRightPanel extends Panel{
 	SearchPanel sp;
 	private CardLayout card;
 	BankSystem bs;
-	
+
 	public UserRightPanel(BankSystem bs) {
 		this.setBackground(Color.BLACK);
 		this.bs = bs;

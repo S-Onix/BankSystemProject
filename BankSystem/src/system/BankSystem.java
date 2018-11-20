@@ -1,19 +1,12 @@
 package system;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Random;
-import java.util.Scanner;
 import java.util.StringTokenizer;
 
+import database.CustomerDAO;
+import database.TransDAO;
 import person.BankCustomer;
 
 public class BankSystem implements Bank {
@@ -24,95 +17,55 @@ public class BankSystem implements Bank {
 	public int count = 0;
 	private Random random;
 	StringBuffer sb;
+	CustomerDAO cdao;
+	TransDAO tdao;
 
 	private BankCustomer loginCustomer;
 
 	public BankSystem() {
 		customers = new ArrayList<>();
+		cdao = new CustomerDAO();
+		tdao = new TransDAO();
 		initCustomers();
 	}
 
-	/**
-	 * 사용자 검사
+	/*
+	 * DB로 부터 데이터를 가져와 사용자 객체 초기화
 	 */
-	// 파일로부터 고객의 데이터 초기화
 	public void initCustomers() {
-
-		FileReader fr = null;
-		BufferedReader br = null;
-		try {
-			fr = new FileReader(new File("D:/yms/bank/BankSystemProject/BankSystem/customerDB/customers.txt"));
-			// fr = new FileReader(new
-			// File("C:/BankSystemProject/BankSystem/customerDB/customers.txt"));
-			br = new BufferedReader(fr);
-			StringTokenizer st;
-			String line = "";
-			while ((line = br.readLine()) != null) {
-				st = new StringTokenizer(line, " ");
-				while (st.hasMoreTokens()) {
-					BankCustomer bc = new BankCustomer();
-					bc.setId(st.nextToken());
-					bc.setPw(st.nextToken());
-					bc.setName(st.nextToken());
-					bc.setEmail(st.nextToken());
-					bc.setPhoneNumber(st.nextToken());
-					bc.setAccount(st.nextToken());
-					bc.setBalance(new Integer(st.nextToken()));
-					customers.add(bc);
-				}
+		ArrayList<String> data = cdao.selectAll();
+		Iterator<String> i = data.iterator();
+		while (i.hasNext()) {
+			String customerStr = i.next();
+			StringTokenizer st = new StringTokenizer(customerStr, "|");
+			while (st.hasMoreTokens()) {
+				BankCustomer customer = new BankCustomer(st.nextToken(), st.nextToken(), st.nextToken(), st.nextToken(),
+						st.nextToken(), st.nextToken(), Integer.parseInt(st.nextToken()), st.nextToken());
+				customers.add(customer);
 			}
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (NumberFormatException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} finally {
-			try {
-				br.close();
-				fr.close();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-
 		}
-
 	}
 
+	/*
+	 * 사용자 잔고 업데이트
+	 */
 	public void updateCustomer() {
-		FileWriter fw = null;
-		BufferedWriter bw = null;
-
-		try {
-			fw = new FileWriter(new File("D:/yms/bank/BankSystemProject/BankSystem/customerDB/customers.txt"));
-			// FileWriter fr = new FileReader(new
-			// File("C:/BankSystemProject/BankSystem/customerDB/customers.txt"));
-			StringBuffer sb = new StringBuffer();
-
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
+		cdao.updateCustomerDB(loginCustomer.getId(), loginCustomer.getBalance());
 	}
 
+	/*
+	 * 회원가입 (ArrayList 객체 추가 + Customer DB에 데이터 추가)
+	 */
 	public void signUp(String id, String pw, String name, String email, String phoneNumber) {
-		BankCustomer customer = new BankCustomer();
-		customer.setId(id);
-		customer.setPw(pw);
-		customer.setName(name);
-		customer.setEmail(email);
-		customer.setPhoneNumber(phoneNumber);
-		customer.setAccount(createAccount());
+		BankCustomer customer = new BankCustomer(id, pw, name, email, phoneNumber, createAccount(), 0, "normal");
 		customers.add(customer);
 		// TODO : file update
-
+		cdao.insertCustomer(id, pw, name, email, phoneNumber, customer.getAccount());
 	}
 
+	/*
+	 * 저장된 객체와의 비교 후 로그인 가능 여부 판단
+	 */
 	public boolean login(String id, String pw) {
 		String msg = "등록된 고객이 없습니다.";
 		Iterator<BankCustomer> i = customers.iterator();
@@ -126,14 +79,26 @@ public class BankSystem implements Bank {
 		return false;
 	}
 
-	
+	/*
+	 * 아이디 중복 여부 검사
+	 */
+	public boolean isIdDistinct(String id) {
+		// 쿼리문을 통해 정상적으로 실행이 된다면 중복 아니면 중복이 아님을 추가하고 싶음
+		Iterator<BankCustomer> i = customers.iterator();
+		while (i.hasNext()) {
+			if (i.next().getId().equals(id))
+				return true;
+		}
+		return false;
+	}
+
 	/**
 	 * 로그인 사용자 동작
 	 */
 	public BankCustomer getLoginCustomer() {
 		return loginCustomer;
 	}
-	
+
 	@Override
 	public void deposit(int money) {
 		loginCustomer.setBalance(loginCustomer.getBalance() + money);
@@ -145,26 +110,10 @@ public class BankSystem implements Bank {
 		loginCustomer.setBalance(loginCustomer.getBalance() - money);
 	}
 
-	public void bankTransfer(String to, int money) {
-		System.out.println("어느 고객에게 이체하실 건가요?");
-		BankCustomer customer = findCustomer(to);
-		System.out.println("얼마 이체하실 건가요?");
-
-		if (loginCustomer.getBalance() - money < 0) {
-			System.out.println("사용자의 금액보다 더 많은 금액을 이체할 수 없습니다");
-		} else {
-			customer.setBalance(customer.getBalance() + money);
-			loginCustomer.setBalance(loginCustomer.getBalance() - money);
-		}
-
-		System.out.println("현재 사용자의 잔고는 " + loginCustomer.getBalance() + "원 남았습니다");
-
-	}
-
 	public int getCustomerBalance() {
 		return loginCustomer.getBalance();
 	}
-	
+
 	/**
 	 * 메니저 관련 동작
 	 */
@@ -172,22 +121,25 @@ public class BankSystem implements Bank {
 		return customers;
 	}
 
-	
-
-	/**
-	 * 사용자의 정보를 입력하는 구간이다 (추후 UI에서 받아온 데이터를 통해 사용자 Customer의 정보 저장예정)
+	/*
+	 * 이체기능 : id를 통해 전달
 	 */
-	private void inputInfo(BankCustomer customer) {
-		
-		customer.setAccount(createAccount());
-		System.out.println("사용자의 계좌번호는 " + customer.getAccount() + " 입니다.");
+	public void transMoney(String id, int money) {
+		if (loginCustomer.getBalance() - money < 0) {
+			return;
+		} else {
+			loginCustomer.setBalance(loginCustomer.getBalance() - money);
+			BankCustomer destCustomer = findCustomer(id);
+			destCustomer.setBalance(destCustomer.getBalance() + money);
+			cdao.updateCustomerDB(loginCustomer.getId(), loginCustomer.getBalance());
+			cdao.updateCustomerDB(destCustomer.getId(), destCustomer.getBalance());
+		}
 
 	}
 
-
-	// 이체
-
-
+	/*
+	 * 계좌 생성
+	 */
 	public String createAccount() {
 
 		int count = 0;
@@ -301,19 +253,6 @@ public class BankSystem implements Bank {
 	 * 현재 : console 출력 완성예정 : UI에 정보 입력 및 검사 예정
 	 */
 	public void printCustomer() {
-//		System.out.print("어떤 고객을 찾으시나요(이름을 입력하세요) > ");
-//		String findCustomer = scan.next();
-//		System.out.println("-------------------------------------------");
-//		System.out.println("이름\t아이디\t계좌번호\t\t\t잔고");
-//		System.out.println("-------------------------------------------");
-//
-//		Iterator i = customers.iterator();
-//		while (i.hasNext()) {
-//			BankCustomer customer = (BankCustomer) i.next();
-//			if (customer.getName().equals(findCustomer)) {
-//				viewInfo(customer);
-//			}
-//		}
 
 	}
 
@@ -329,67 +268,9 @@ public class BankSystem implements Bank {
 		return customer;
 	}
 
-
-
-//	public void execute() {
-//		int menuNum;
-//
-//		Iterator i = customers.iterator();
-//		while (i.hasNext()) {
-//			BankCustomer temp = (BankCustomer) i.next();
-//			System.out.println(temp.getName() + " " + temp.getId() + " " + temp.getAccount() + " " + temp.getBalance());
-//		}
-//
-//		do {
-//			System.out.println("------------------------------------------------------");
-//			System.out.println("1. 회원가입 | 2. 로그인  | 3. 고객정보 출력  |  4. 예금  | 5. 출금 | 6. 잔고  | 7. 이체 | 8. 전고객출력 | 9.종료");
-//			System.out.println("------------------------------------------------------");
-//			System.out.print("선택 > ");
-//			menuNum = scan.nextInt();
-//			switch (menuNum) {
-//			case 1:
-//				// signUp();
-//				break;
-//			case 2:
-//				// login();
-//				break;
-//			case 3:
-//				printCustomer();
-//				break;
-//			case 4:
-//				// deposit();
-//				break;
-//			case 5:
-//				// withdraw();
-//				break;
-//			case 6:
-//				if (loginCustomer != null) {
-////					printBalance();
-//				} else {
-//					System.out.println("로그인 후 사용 가능합니다.");
-//				}
-//				break;
-//			case 7:
-//				if (loginCustomer != null) {
-//					bankTransfer();
-//				} else {
-//					System.out.println("로그인 후 사용 가능합니다.");
-//				}
-//				break;
-//			case 8:
-//				printAllCustomer();
-//			case 9:
-//				setRun(false);
-//				break;
-//			default:
-//				System.out.println("잘못된 입력입니다.(1~7)");
-//			}
-//		} while (run);
-//
-//	}
-//
-//	public void setRun(boolean run) {
-//		this.run = run;
-//	}
-
+	// 현재 시간 정보 String으로 출력 고객화면에서 사용 예정
+	public String getCurrentDate() {
+		String date = "";
+		return date;
+	}
 }

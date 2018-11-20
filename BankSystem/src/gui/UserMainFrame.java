@@ -10,7 +10,6 @@ import system.BankSystem;
 
 public class UserMainFrame extends Frame {
 
-	// 해당 프레임에는 두개의 패널이 있고 각 패널은 GridLayout과 CardLayout으로 구성되어 있다.
 	UserLeftPanel leftPanel;
 	UserRightPanel rightPanel;
 	Frame loginFrame;
@@ -21,7 +20,7 @@ public class UserMainFrame extends Frame {
 		this.setSize(600, 600);
 
 		rightPanel = new UserRightPanel(bs);
-		leftPanel = new UserLeftPanel(this, rightPanel);
+		leftPanel = new UserLeftPanel(this, rightPanel, loginFrame);
 
 		initPanelSite();
 		
