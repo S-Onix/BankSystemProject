@@ -40,7 +40,7 @@ public class UserRightPanel extends Panel{
 		dp = new DipositPanel(bs);
 		wp = new WithdrawPanel(bs, umf);
 		tp = new TransferPanel(bs);
-		sp = new SearchPanel(bs);
+//		sp = new SearchPanel(bs);
 	}
 	
 	public void addPanel() {

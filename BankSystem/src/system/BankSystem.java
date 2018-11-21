@@ -75,6 +75,10 @@ public class BankSystem implements Bank {
 	public void updateTransLog(int money, int flag, String account) {
 		tdao.insertTransLog(loginCustomer, transType[flag], money, account);
 	}
+	
+	public String[][] getUserTransLog(){
+		return tdao.selectCustomerLog(loginCustomer);
+	}
 
 	/*
 	 * 회원가입 (ArrayList 객체 추가 + Customer DB에 데이터 추가)
@@ -255,16 +259,6 @@ public class BankSystem implements Bank {
 
 		return result;
 	}
-
-
-	// 고객정보 출력
-	/**
-	 * 현재 : console 출력 완성예정 : UI에 정보 입력 및 검사 예정
-	 */
-	public void printCustomer() {
-
-	}
-	
 	
 	public BankCustomer findCustomerById(String id) {
 		BankCustomer customer = null;

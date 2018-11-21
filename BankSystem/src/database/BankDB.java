@@ -18,12 +18,12 @@ public class BankDB {
 	private static final String DRIVER = "com.mysql.jdbc.Driver";
 	// 데이터 삽입 과정에서 한글 인코딩이 안되서 추가함
 //	private static final String URL = "jdbc:mysql://192.168.0.21:3306/app_user6?useUnicode=true&characterEncoding=utf8&autoReconnect=true&validationQuery=select 1";
-//	private static final String URL = "jdbc:mysql://192.168.0.21:3306/app_user6";
-//	private static final String USER = "user6";
-//	private static final String PASSWORD = "oracle";
-	private static final String URL = "jdbc:mysql://127.0.0.1:3306/bank_system";
-	private static final String USER = "root";
-	private static final String PASSWORD = "root";
+	private static final String URL = "jdbc:mysql://192.168.0.21:3306/app_user6";
+	private static final String USER = "user6";
+	private static final String PASSWORD = "oracle";
+//	private static final String URL = "jdbc:mysql://127.0.0.1:3306/bank_system";
+//	private static final String USER = "root";
+//	private static final String PASSWORD = "root";
 	private BankDB() {
 		try {
 			System.out.println("Driver connect before");
