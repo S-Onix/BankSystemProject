@@ -73,7 +73,7 @@ public class TransDAO {
 	 */
 
 	public String[][] selectCustomerLog(BankCustomer bc) {
-		 String sql = "SELECT * FROM TRANS_LOG WHERE USER_ID = '" + bc.getId() + "';";
+		 String sql = "SELECT * FROM TRANS_LOG WHERE USER_ID = '" + bc.getId() + "' ORDER BY RECORD DESC;";
 
 
 		String[][] dataGroup = null;
