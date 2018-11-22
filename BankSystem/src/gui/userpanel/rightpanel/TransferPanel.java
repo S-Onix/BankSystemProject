@@ -134,7 +134,7 @@ public class TransferPanel extends Panel implements ActionListener {
 			public void keyTyped(KeyEvent ke) {
 				char c= ke.getKeyChar();
 				JTextField temp = (JTextField) ke.getSource();
-				if(!Character.isDigit(c) || temp.getText().length() >=4)
+				if(!Character.isDigit(c) || temp.getText().length() >=3)
 					ke.consume();
 			}
 		});
@@ -142,7 +142,7 @@ public class TransferPanel extends Panel implements ActionListener {
 			public void keyTyped(KeyEvent ke) {
 				char c= ke.getKeyChar();
 				JTextField temp = (JTextField) ke.getSource();
-				if(!Character.isDigit(c) | temp.getText().length() >=6)
+				if(!Character.isDigit(c) | temp.getText().length() >=5)
 					ke.consume();
 			}
 		});
@@ -150,7 +150,7 @@ public class TransferPanel extends Panel implements ActionListener {
 			public void keyTyped(KeyEvent ke) {
 				char c= ke.getKeyChar();
 				JTextField temp = (JTextField) ke.getSource();
-				if(!Character.isDigit(c) | temp.getText().length() >=6)
+				if(!Character.isDigit(c) | temp.getText().length() >=5)
 					ke.consume();
 			}
 		});
