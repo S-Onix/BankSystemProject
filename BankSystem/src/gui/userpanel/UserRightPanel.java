@@ -38,7 +38,7 @@ public class UserRightPanel extends Panel{
 	
 	public void initRightPanel() {
 		dp = new DipositPanel(bs);
-		wp = new WithdrawPanel(bs, umf);
+		wp = new WithdrawPanel(bs);
 		tp = new TransferPanel(bs);
 		sp = new SearchPanel(bs);
 	}

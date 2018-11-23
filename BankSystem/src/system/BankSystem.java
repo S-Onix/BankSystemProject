@@ -19,10 +19,8 @@ public class BankSystem implements Bank {
 	StringBuffer sb;
 	CustomerDAO cdao;
 	TransDAO tdao;
-	
-	String transType[] = {
-			"입금", "출금", "계좌이체"
-	};
+
+	String transType[] = { "입금", "출금", "계좌이체" };
 
 	private BankCustomer loginCustomer;
 
@@ -56,27 +54,26 @@ public class BankSystem implements Bank {
 	public void updateCustomer() {
 		cdao.updateCustomerDB(loginCustomer.getId(), loginCustomer.getBalance());
 	}
-	
-	
-	
+
 	public boolean isUpdate(int money) {
-		if(loginCustomer.getBalance() - money < 0)
+		if (loginCustomer.getBalance() - money < 0)
 			return false;
-		else return true;
+		else
+			return true;
 	}
-	
+
 	/*
 	 * 거래 이력 업데이트
-	 * */
+	 */
 	public void updateTransLog(int money, int flag) {
-		tdao.insertTransLog(loginCustomer,transType[flag],money);
+		tdao.insertTransLog(loginCustomer, transType[flag], money);
 	}
-	
+
 	public void updateTransLog(int money, int flag, String account) {
 		tdao.insertTransLog(loginCustomer, transType[flag], money, account);
 	}
-	
-	public String[][] getUserTransLog(){
+
+	public String[][] getUserTransLog() {
 		return tdao.selectCustomerLog(loginCustomer);
 	}
 
@@ -157,11 +154,14 @@ public class BankSystem implements Bank {
 		} else {
 			loginCustomer.setBalance(loginCustomer.getBalance() - money);
 			BankCustomer destCustomer = findCustomerByAccount(account);
-			destCustomer.setBalance(destCustomer.getBalance() + money);
-			cdao.updateCustomerDB(loginCustomer.getId(), loginCustomer.getBalance());
-			cdao.updateCustomerDB(destCustomer.getId(), destCustomer.getBalance());
-			return true;
+			if (destCustomer != null) {
+				destCustomer.setBalance(destCustomer.getBalance() + money);
+				cdao.updateCustomerDB(loginCustomer.getId(), loginCustomer.getBalance());
+				cdao.updateCustomerDB(destCustomer.getId(), destCustomer.getBalance());
+				return true;
+			}
 		}
+		return false;
 
 	}
 
@@ -259,7 +259,7 @@ public class BankSystem implements Bank {
 
 		return result;
 	}
-	
+
 	public BankCustomer findCustomerById(String id) {
 		BankCustomer customer = null;
 		for (int i = 0; i < customers.size(); i++) {
@@ -282,8 +282,6 @@ public class BankSystem implements Bank {
 		}
 		return customer;
 	}
-	
-	
 
 	// 현재 시간 정보 String으로 출력 고객화면에서 사용 예정
 	public String getCurrentDate() {

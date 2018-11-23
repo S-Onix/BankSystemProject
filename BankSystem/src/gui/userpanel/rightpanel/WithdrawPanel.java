@@ -35,12 +35,10 @@ public class WithdrawPanel extends JPanel implements ActionListener {
 	JButton cancelButton;
 	BankSystem bs;
 	MessageDialog msgDialog;
-	UserMainFrame umf;
 
-	public WithdrawPanel(BankSystem bs, UserMainFrame parent) {
+	public WithdrawPanel(BankSystem bs) {
 		this.setLayout(null);
 		this.bs = bs;
-		parent = umf;
 		
 		msgDialog = new MessageDialog(this.getParent());
 
